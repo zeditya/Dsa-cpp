@@ -2,6 +2,7 @@
  * Problem   : 0001. Two Sum
  * Topic     : Arrays
  * Difficulty: Easy        // Easy | Medium | Hard
+ * Pattern   : Hash map
  * Link      : https://leetcode.com/problems/two-sum/
  * Time      : O(n)
  * Space     : O(n)

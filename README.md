@@ -34,8 +34,6 @@ The goal is simple: get good enough at the basics that new problems stop looking
 
 ## Progress
 
-**0 / 455 solved (0%)**
-
 | 🧩 Total Solved | 🟢 Easy | 🟡 Medium | 🔴 Hard | 🔥 Current Streak | 🏆 Best Streak |
 |:---:|:---:|:---:|:---:|:---:|:---:|
 | **0** | 0 | 0 | 0 | 1 day | 1 day |
@@ -44,9 +42,10 @@ The goal is simple: get good enough at the basics that new problems stop looking
   <img src=".github/readme/assets/dashboard.svg" alt="DSA progress dashboard" width="100%" />
 </div>
 
-<sub>Updated 12 Nov 2026, 10:38 PM IST.</sub>
+<sub>Updated 12 Nov 2026, 10:48 PM IST.</sub>
 
-### Striver's A2Z
+<details>
+<summary><strong>Striver's A2Z tracker</strong></summary>
 
 Status: ⬜ Not started • 🟨 In progress • 🟩 All mapped topics started
 
@@ -72,6 +71,8 @@ Status: ⬜ Not started • 🟨 In progress • 🟩 All mapped topics started
 | 18 | Strings (Advanced) | ⬜ | 0 | `░░░░░░░░░░░░░░░░` 0% |
 
 > Coverage counts topics started, not every problem in the sheet. It comes from the folders and metadata in this repo.
+
+</details>
 
 <details>
 <summary><strong>Milestones</strong></summary>
@@ -122,22 +123,15 @@ I only commit code I can explain. If I can't explain it, I haven't learned it ye
 
 ### Recent work
 
-No solutions yet. Add a file under `DSA/` and it will appear here after the next push.
+No solutions logged yet.
 
 ### Weekly log
 
 | Week | Topics | Solved | Commits |
 |:---|:---|:---:|:---:|
-| 09 Nov - 12 Nov (current) | - | 0 | 10 |
-| 02 Nov - 08 Nov | - | 0 | 0 |
-| 26 Oct - 01 Nov | - | 0 | 0 |
-| 19 Oct - 25 Oct | - | 0 | 0 |
-| 12 Oct - 18 Oct | - | 0 | 0 |
-| 05 Oct - 11 Oct | - | 0 | 0 |
-| 28 Sep - 04 Oct | - | 0 | 0 |
-| 21 Sep - 27 Sep | - | 0 | 0 |
+| 09 Nov - 12 Nov (current) | - | 0 | 11 |
 
-> The log is generated from my commits. The current week is partial.
+> The log is generated from my commits. Empty weeks are hidden and the current week is partial.
 
 ### Heatmap
 
@@ -169,11 +163,17 @@ Dsa-cpp/
 Each solution starts with a short header:
 
 ```cpp
-// Problem  : <name> | <link>
-// Pattern  : <e.g. two pointers, binary search on answer>
-// Approach : <1-2 lines in my own words>
-// Time     : O(?)    Space : O(?)
-// Revised  : [ ] 3 days   [ ] 2-3 weeks
+/*
+ * Problem   : <number>. <name>
+ * Topic     : <e.g. Arrays>
+ * Difficulty: <Easy | Medium | Hard>
+ * Pattern   : <e.g. hash map, sliding window>
+ * Link      : <url>
+ * Time      : O(?)    Space : O(?)
+ *
+ * Approach:
+ *   <1-2 lines in my own words>
+ */
 ```
 
 Run a file with:
@@ -182,7 +182,7 @@ Run a file with:
 g++ -std=c++17 -O2 -Wall solution.cpp -o solution && ./solution
 ```
 
-**Toolbox:** `C++17` • `STL` • `Git` • `GitHub Actions` • `VS Code` • `Linux` • `CMake`
+**Toolbox:** `C++17` • `STL` • `Git` • `GitHub Actions` • `VS Code` • `Linux`
 
 ---
 

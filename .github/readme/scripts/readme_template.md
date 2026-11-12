@@ -34,8 +34,6 @@ The goal is simple: get good enough at the basics that new problems stop looking
 
 ## Progress
 
-**{{TOTAL_SOLUTIONS}} / {{TARGET_PROBLEMS}} solved ({{PROGRESS_PCT}}%)**
-
 {{STATS_TABLE}}
 
 <div align="center">
@@ -44,13 +42,16 @@ The goal is simple: get good enough at the basics that new problems stop looking
 
 <sub>Updated {{LAST_UPDATED}}.</sub>
 
-### Striver's A2Z
+<details>
+<summary><strong>Striver's A2Z tracker</strong></summary>
 
 Status: ⬜ Not started • 🟨 In progress • 🟩 All mapped topics started
 
 {{STRIVER_TABLE}}
 
 > Coverage counts topics started, not every problem in the sheet. It comes from the folders and metadata in this repo.
+
+</details>
 
 <details>
 <summary><strong>Milestones</strong></summary>
@@ -83,7 +84,7 @@ I only commit code I can explain. If I can't explain it, I haven't learned it ye
 
 {{WEEKLY_LOG}}
 
-> The log is generated from my commits. The current week is partial.
+> The log is generated from my commits. Empty weeks are hidden and the current week is partial.
 
 ### Heatmap
 
@@ -112,11 +113,17 @@ I only commit code I can explain. If I can't explain it, I haven't learned it ye
 Each solution starts with a short header:
 
 ```cpp
-// Problem  : <name> | <link>
-// Pattern  : <e.g. two pointers, binary search on answer>
-// Approach : <1-2 lines in my own words>
-// Time     : O(?)    Space : O(?)
-// Revised  : [ ] 3 days   [ ] 2-3 weeks
+/*
+ * Problem   : <number>. <name>
+ * Topic     : <e.g. Arrays>
+ * Difficulty: <Easy | Medium | Hard>
+ * Pattern   : <e.g. hash map, sliding window>
+ * Link      : <url>
+ * Time      : O(?)    Space : O(?)
+ *
+ * Approach:
+ *   <1-2 lines in my own words>
+ */
 ```
 
 Run a file with:
@@ -125,7 +132,7 @@ Run a file with:
 g++ -std=c++17 -O2 -Wall solution.cpp -o solution && ./solution
 ```
 
-**Toolbox:** `C++17` • `STL` • `Git` • `GitHub Actions` • `VS Code` • `Linux` • `CMake`
+**Toolbox:** `C++17` • `STL` • `Git` • `GitHub Actions` • `VS Code` • `Linux`
 
 ---
 

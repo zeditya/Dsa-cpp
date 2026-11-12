@@ -437,10 +437,7 @@ def collect_solutions() -> list[dict]:
 def build_recent_table(stats: dict) -> str:
     solutions = stats["solutions"]
     if not solutions:
-        return (
-            "No solutions yet. Add a file under `DSA/` and it will appear here "
-            "after the next push."
-        )
+        return "No solutions logged yet."
 
     rows = [
         "| Problem | Topic | Difficulty | Added | Code |",
@@ -554,6 +551,8 @@ def build_weekly_log(stats: dict) -> str:
         week_solutions = [
             item for item in stats["solutions"] if start <= item["added_at"].date() <= end
         ]
+        if offset > 0 and not commits and not week_solutions:
+            continue
         topics = sorted({item["topic"] for item in week_solutions})
         topic_text = ", ".join(topics) if topics else "-"
         label = f"{start.strftime('%d %b')} - {end.strftime('%d %b')}"
