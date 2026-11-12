@@ -79,7 +79,7 @@ Dsa-cpp/
 │   │   │   └── grind.gif            ← the one pop culture GIF in the README
 │   │   ├── scripts/
 │   │   │   ├── config.json          ← targets, topics, steps, timezone
-│   │   │   ├── contests.example.json← copy to contests.json for the log
+│   │   │   ├── contests.example.json ← copy to contests.json for the log
 │   │   │   ├── readme_template.md   ← edit this to change the README
 │   │   │   └── update_readme.py     ← generator (no external dependencies)
 │   │   └── templates/
