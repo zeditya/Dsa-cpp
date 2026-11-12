@@ -1,0 +1,210 @@
+{
+  "username": "zeditya",
+  "repo": "Dsa-cpp",
+  "target_problems": 500,
+  "topic_target": 25,
+  "timezone": "Asia/Kolkata",
+  "leetcode_username": "",
+  "show_leetcode_card": false,
+  "exclude_dirs": [
+    ".git",
+    ".github",
+    ".vscode",
+    ".idea",
+    "scripts",
+    "templates",
+    "assets",
+    "docs",
+    "build",
+    "bin",
+    "node_modules"
+  ],
+  "code_extensions": [
+    ".cpp",
+    ".cc",
+    ".cxx",
+    ".c",
+    ".h",
+    ".hpp",
+    ".py",
+    ".java",
+    ".js",
+    ".ts",
+    ".go",
+    ".rs",
+    ".kt",
+    ".swift"
+  ],
+  "topics": [
+    {
+      "name": "C++ & STL",
+      "icon": "⚙️",
+      "match": ["cpp", "cplusplus", "stl", "oop", "moderncpp", "cbasics", "basics"]
+    },
+    {
+      "name": "Arrays",
+      "icon": "🧮",
+      "match": ["array", "arrays", "vector", "matrix", "matrices"]
+    },
+    {
+      "name": "Strings",
+      "icon": "🔤",
+      "match": ["string", "strings", "char", "characters", "patternmatching"]
+    },
+    {
+      "name": "Sorting",
+      "icon": "🔀",
+      "match": ["sort", "sorting", "mergesort", "quicksort", "countingsort"]
+    },
+    {
+      "name": "Binary Search",
+      "icon": "🎯",
+      "match": ["binarysearch", "lowerbound", "upperbound"]
+    },
+    {
+      "name": "Two Pointers",
+      "icon": "👉",
+      "match": ["twopointers", "twopointer", "2pointers", "threepointers"]
+    },
+    {
+      "name": "Sliding Window",
+      "icon": "🪟",
+      "match": ["slidingwindow", "window"]
+    },
+    {
+      "name": "Math",
+      "icon": "➗",
+      "match": ["math", "maths", "mathematics", "numbertheory", "gcd", "prime", "modular"]
+    },
+    {
+      "name": "Bit Manipulation",
+      "icon": "🔢",
+      "match": ["bit", "bits", "bitwise", "bitmanipulation", "binary"]
+    },
+    {
+      "name": "Linked List",
+      "icon": "🔗",
+      "match": ["linkedlist", "singly", "doubly", "listnode"]
+    },
+    {
+      "name": "Stack & Queue",
+      "icon": "🥞",
+      "match": ["stack", "queue", "deque", "monotonicstack", "stackqueue"]
+    },
+    {
+      "name": "Hashing",
+      "icon": "🗃️",
+      "match": ["hash", "hashing", "hashmap", "hashtable", "unorderedmap", "set"]
+    },
+    {
+      "name": "Trees & BST",
+      "icon": "🌳",
+      "match": ["tree", "trees", "bst", "binarytree", "binarysearchtree", "traversal"]
+    },
+    {
+      "name": "Heaps",
+      "icon": "⛰️",
+      "match": ["heap", "heaps", "priorityqueue"]
+    },
+    {
+      "name": "Tries",
+      "icon": "🌲",
+      "match": ["trie", "tries", "prefixtree"]
+    },
+    {
+      "name": "Recursion",
+      "icon": "🌀",
+      "match": ["recursion", "recursive", "divideandconquer"]
+    },
+    {
+      "name": "Backtracking",
+      "icon": "🧩",
+      "match": ["backtracking", "backtrack", "permutation", "combination", "nqueens", "subset"]
+    },
+    {
+      "name": "Greedy",
+      "icon": "💡",
+      "match": ["greedy", "interval", "activityselection"]
+    },
+    {
+      "name": "Graphs",
+      "icon": "🕸️",
+      "match": [
+        "graph",
+        "graphs",
+        "bfs",
+        "dfs",
+        "dijkstra",
+        "topological",
+        "unionfind",
+        "disjointset",
+        "minimumspanningtree",
+        "mst"
+      ]
+    },
+    {
+      "name": "Dynamic Programming",
+      "icon": "🧠",
+      "match": [
+        "dynamicprogramming",
+        "dp",
+        "memoization",
+        "tabulation",
+        "knapsack",
+        "lcs",
+        "lis"
+      ]
+    },
+    {
+      "name": "Segment Trees",
+      "icon": "📊",
+      "match": ["segmenttree", "fenwick", "binaryindexedtree", "bittree", "rangequery"]
+    },
+    {
+      "name": "Misc",
+      "icon": "📦",
+      "match": ["misc", "miscellaneous", "others", "general"]
+    }
+  ],
+  "phases": [
+    {
+      "name": "Phase 1 · Foundations",
+      "topics": [
+        "C++ & STL",
+        "Arrays",
+        "Strings",
+        "Sorting",
+        "Binary Search",
+        "Two Pointers",
+        "Sliding Window",
+        "Math",
+        "Bit Manipulation"
+      ]
+    },
+    {
+      "name": "Phase 2 · Core Data Structures",
+      "topics": [
+        "Linked List",
+        "Stack & Queue",
+        "Hashing",
+        "Trees & BST",
+        "Heaps",
+        "Tries"
+      ]
+    },
+    {
+      "name": "Phase 3 · Algorithms",
+      "topics": [
+        "Recursion",
+        "Backtracking",
+        "Greedy",
+        "Graphs",
+        "Dynamic Programming"
+      ]
+    },
+    {
+      "name": "Phase 4 · Advanced",
+      "topics": ["Segment Trees", "Misc"]
+    }
+  ]
+}

@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="780" viewBox="0 0 1200 780" role="img" aria-label="Live DSA progress dashboard for zeditya">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0%" stop-color="#080f1c" />
+<stop offset="55%" stop-color="#0b1526" />
+<stop offset="100%" stop-color="#0a1a22" />
+</linearGradient>
+<linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0%" stop-color="#22d3ee" />
+<stop offset="55%" stop-color="#2dd4bf" />
+<stop offset="100%" stop-color="#a78bfa" />
+</linearGradient>
+<linearGradient id="bar" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0%" stop-color="#06b6d4" />
+<stop offset="50%" stop-color="#14b8a6" />
+<stop offset="100%" stop-color="#8b5cf6" />
+</linearGradient>
+<pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+<path d="M 32 0 L 0 0 0 32" fill="none" stroke="#38bdf8" stroke-width="0.5" />
+</pattern>
+<filter id="blur" x="-50%" y="-50%" width="200%" height="200%">
+<feGaussianBlur stdDeviation="70" />
+</filter>
+</defs>
+<rect width="1200" height="780" rx="26" fill="url(#bg)" />
+<rect width="1200" height="780" rx="26" fill="url(#grid)" opacity="0.035" />
+<rect x="0" y="0" width="1200" height="4" fill="url(#accent)" />
+<circle cx="1080" cy="90" r="190" fill="#06b6d4" opacity="0.10" filter="url(#blur)" />
+<circle cx="120" cy="700" r="180" fill="#8b5cf6" opacity="0.08" filter="url(#blur)" />
+<rect x="60" y="42" width="168" height="28" rx="14" fill="#0b2838" stroke="#155e75" />
+<circle cx="78" cy="56" r="4.5" fill="#22d3ee" />
+<text x="92" y="60" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10.5" font-weight="700" fill="#67e8f9" text-anchor="start" letter-spacing="1.4">LIVE DSA DASHBOARD</text>
+<text x="60" y="118" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="36" font-weight="700" fill="#f8fafc" text-anchor="start">The Grind, Visualized.</text>
+<text x="60" y="144" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="400" fill="#94a3b8" text-anchor="start">Auto-generated from commits  ·  github.com/zeditya/Dsa-cpp</text>
+<rect x="60" y="166" width="255" height="104" rx="16" fill="#101c2e" stroke="#1e3a5f" stroke-width="1" />
+<rect x="60" y="166" width="4" height="104" rx="2" fill="#22d3ee" />
+<text x="84" y="196" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10.5" font-weight="700" fill="#7dd3fc" text-anchor="start" letter-spacing="1.2">SOLUTIONS</text>
+<text x="84" y="236" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="32" font-weight="700" fill="#f8fafc" text-anchor="start">0</text>
+<text x="84" y="256" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10.5" font-weight="400" fill="#94a3b8" text-anchor="start">code files tracked</text>
+<rect x="335" y="166" width="255" height="104" rx="16" fill="#101c2e" stroke="#1e3a5f" stroke-width="1" />
+<rect x="335" y="166" width="4" height="104" rx="2" fill="#fb923c" />
+<text x="359" y="196" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10.5" font-weight="700" fill="#7dd3fc" text-anchor="start" letter-spacing="1.2">CURRENT STREAK</text>
+<text x="359" y="236" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="32" font-weight="700" fill="#f8fafc" text-anchor="start">1d</text>
+<text x="359" y="256" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10.5" font-weight="400" fill="#94a3b8" text-anchor="start">keep the chain alive</text>
+<rect x="610" y="166" width="255" height="104" rx="16" fill="#101c2e" stroke="#1e3a5f" stroke-width="1" />
+<rect x="610" y="166" width="4" height="104" rx="2" fill="#a78bfa" />
+<text x="634" y="196" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10.5" font-weight="700" fill="#7dd3fc" text-anchor="start" letter-spacing="1.2">TOPICS</text>
+<text x="634" y="236" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="32" font-weight="700" fill="#f8fafc" text-anchor="start">0/22</text>
+<text x="634" y="256" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10.5" font-weight="400" fill="#94a3b8" text-anchor="start">coverage unlocked</text>
+<rect x="885" y="166" width="255" height="104" rx="16" fill="#101c2e" stroke="#1e3a5f" stroke-width="1" />
+<rect x="885" y="166" width="4" height="104" rx="2" fill="#4ade80" />
+<text x="909" y="196" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10.5" font-weight="700" fill="#7dd3fc" text-anchor="start" letter-spacing="1.2">ACTIVE DAYS</text>
+<text x="909" y="236" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="32" font-weight="700" fill="#f8fafc" text-anchor="start">1</text>
+<text x="909" y="256" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10.5" font-weight="400" fill="#94a3b8" text-anchor="start">days with commits</text>
+<text x="60" y="312" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="11.5" font-weight="700" fill="#94a3b8" text-anchor="start" letter-spacing="1.4">OVERALL PROGRESS</text>
+<text x="1140" y="312" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="13" font-weight="700" fill="#e2e8f0" text-anchor="end">0 / 500  ·  0%</text>
+<rect x="60" y="328" width="1080" height="16" rx="8" fill="#1e293b" />
+<text x="60" y="390" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="11.5" font-weight="700" fill="#94a3b8" text-anchor="start" letter-spacing="1.4">TOPIC COVERAGE</text>
+<text x="1140" y="390" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#64748b" text-anchor="end">0 of 22 topics started</text>
+<text x="60" y="420" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="500" fill="#64748b" text-anchor="start">C++ &amp; STL</text>
+<rect x="250" y="411" width="155" height="8" rx="4" fill="#1e293b" />
+<text x="450" y="420" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="11.5" font-weight="700" fill="#475569" text-anchor="end">0</text>
+<text x="60" y="447" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="500" fill="#64748b" text-anchor="start">Arrays</text>
+<rect x="250" y="438" width="155" height="8" rx="4" fill="#1e293b" />
+<text x="450" y="447" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="11.5" font-weight="700" fill="#475569" text-anchor="end">0</text>
+<text x="60" y="474" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="500" fill="#64748b" text-anchor="start">Strings</text>
+<rect x="250" y="465" width="155" height="8" rx="4" fill="#1e293b" />
+<text x="450" y="474" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="11.5" font-weight="700" fill="#475569" text-anchor="end">0</text>
+<text x="60" y="501" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="500" fill="#64748b" text-anchor="start">Sorting</text>
+<rect x="250" y="492" width="155" height="8" rx="4" fill="#1e293b" />
+<text x="450" y="501" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="11.5" font-weight="700" fill="#475569" text-anchor="end">0</text>
+<text x="60" y="528" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="500" fill="#64748b" text-anchor="start">Binary Search</text>
+<rect x="250" y="519" width="155" height="8" rx="4" fill="#1e293b" />
+<text x="450" y="528" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="11.5" font-weight="700" fill="#475569" text-anchor="end">0</text>
+<text x="60" y="555" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="500" fill="#64748b" text-anchor="start">Two Pointers</text>
+<rect x="250" y="546" width="155" height="8" rx="4" fill="#1e293b" />
+<text x="450" y="555" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="11.5" font-weight="700" fill="#475569" text-anchor="end">0</text>
+<text x="60" y="582" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="500" fill="#64748b" text-anchor="start">Sliding Window</text>
+<rect x="250" y="573" width="155" height="8" rx="4" fill="#1e293b" />
+<text x="450" y="582" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="11.5" font-weight="700" fill="#475569" text-anchor="end">0</text>
+<text x="60" y="609" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="500" fill="#64748b" text-anchor="start">Math</text>
+<rect x="250" y="600" width="155" height="8" rx="4" fill="#1e293b" />
+<text x="450" y="609" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="11.5" font-weight="700" fill="#475569" text-anchor="end">0</text>
+<text x="60" y="636" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="500" fill="#64748b" text-anchor="start">Bit Manipulation</text>
+<rect x="250" y="627" width="155" height="8" rx="4" fill="#1e293b" />
+<text x="450" y="636" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="11.5" font-weight="700" fill="#475569" text-anchor="end">0</text>
+<text x="60" y="663" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="500" fill="#64748b" text-anchor="start">Linked List</text>
+<rect x="250" y="654" width="155" height="8" rx="4" fill="#1e293b" />
+<text x="450" y="663" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="11.5" font-weight="700" fill="#475569" text-anchor="end">0</text>
+<text x="60" y="690" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="500" fill="#64748b" text-anchor="start">Stack &amp; Queue</text>
+<rect x="250" y="681" width="155" height="8" rx="4" fill="#1e293b" />
+<text x="450" y="690" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="11.5" font-weight="700" fill="#475569" text-anchor="end">0</text>
+<text x="615" y="420" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="500" fill="#64748b" text-anchor="start">Hashing</text>
+<rect x="805" y="411" width="155" height="8" rx="4" fill="#1e293b" />
+<text x="1005" y="420" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="11.5" font-weight="700" fill="#475569" text-anchor="end">0</text>
+<text x="615" y="447" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="500" fill="#64748b" text-anchor="start">Trees &amp; BST</text>
+<rect x="805" y="438" width="155" height="8" rx="4" fill="#1e293b" />
+<text x="1005" y="447" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="11.5" font-weight="700" fill="#475569" text-anchor="end">0</text>
+<text x="615" y="474" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="500" fill="#64748b" text-anchor="start">Heaps</text>
+<rect x="805" y="465" width="155" height="8" rx="4" fill="#1e293b" />
+<text x="1005" y="474" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="11.5" font-weight="700" fill="#475569" text-anchor="end">0</text>
+<text x="615" y="501" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="500" fill="#64748b" text-anchor="start">Tries</text>
+<rect x="805" y="492" width="155" height="8" rx="4" fill="#1e293b" />
+<text x="1005" y="501" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="11.5" font-weight="700" fill="#475569" text-anchor="end">0</text>
+<text x="615" y="528" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="500" fill="#64748b" text-anchor="start">Recursion</text>
+<rect x="805" y="519" width="155" height="8" rx="4" fill="#1e293b" />
+<text x="1005" y="528" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="11.5" font-weight="700" fill="#475569" text-anchor="end">0</text>
+<text x="615" y="555" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="500" fill="#64748b" text-anchor="start">Backtracking</text>
+<rect x="805" y="546" width="155" height="8" rx="4" fill="#1e293b" />
+<text x="1005" y="555" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="11.5" font-weight="700" fill="#475569" text-anchor="end">0</text>
+<text x="615" y="582" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="500" fill="#64748b" text-anchor="start">Greedy</text>
+<rect x="805" y="573" width="155" height="8" rx="4" fill="#1e293b" />
+<text x="1005" y="582" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="11.5" font-weight="700" fill="#475569" text-anchor="end">0</text>
+<text x="615" y="609" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="500" fill="#64748b" text-anchor="start">Graphs</text>
+<rect x="805" y="600" width="155" height="8" rx="4" fill="#1e293b" />
+<text x="1005" y="609" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="11.5" font-weight="700" fill="#475569" text-anchor="end">0</text>
+<text x="615" y="636" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="500" fill="#64748b" text-anchor="start">Dynamic Programming</text>
+<rect x="805" y="627" width="155" height="8" rx="4" fill="#1e293b" />
+<text x="1005" y="636" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="11.5" font-weight="700" fill="#475569" text-anchor="end">0</text>
+<text x="615" y="663" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="500" fill="#64748b" text-anchor="start">Segment Trees</text>
+<rect x="805" y="654" width="155" height="8" rx="4" fill="#1e293b" />
+<text x="1005" y="663" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="11.5" font-weight="700" fill="#475569" text-anchor="end">0</text>
+<text x="615" y="690" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="500" fill="#64748b" text-anchor="start">Misc</text>
+<rect x="805" y="681" width="155" height="8" rx="4" fill="#1e293b" />
+<text x="1005" y="690" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="11.5" font-weight="700" fill="#475569" text-anchor="end">0</text>
+<line x1="60" y1="720" x2="1140" y2="720" stroke="#1e293b" stroke-width="1" />
+<text x="60" y="748" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="400" fill="#64748b" text-anchor="start">Last updated 12 Nov 2026, 08:13 PM IST</text>
+<text x="1140" y="748" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="11" font-weight="400" fill="#64748b" text-anchor="end">github.com/zeditya/Dsa-cpp</text>
+</svg>

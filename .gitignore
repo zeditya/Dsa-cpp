@@ -1,0 +1,21 @@
+# Build artefacts
+*.exe
+*.out
+*.o
+*.obj
+*.class
+*.pyc
+__pycache__/
+build/
+bin/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local env
+.env
+.venv/
+node_modules/

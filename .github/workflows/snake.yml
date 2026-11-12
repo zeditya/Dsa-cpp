@@ -1,0 +1,47 @@
+name: Generate Snake
+
+on:
+  schedule:
+    # Daily at 00:00 UTC
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "output/**"
+      - "README.md"
+      - "assets/**"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: snake-generator
+  cancel-in-progress: true
+
+jobs:
+  generate-snake:
+    name: Generate contribution snake
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate snake SVGs
+        uses: platane/snk/svg-only@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            output/github-contribution-grid-snake.svg
+            output/github-contribution-grid-snake-dark.svg?palette=github-dark
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to output branch
+        uses: crazy-max/ghaction-github-pages@v4
+        with:
+          target_branch: output
+          build_dir: output
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
