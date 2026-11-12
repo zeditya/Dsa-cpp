@@ -42,7 +42,7 @@ The goal is simple: get good enough at the basics that new problems stop looking
   <img src=".github/readme/assets/dashboard.svg" alt="DSA progress dashboard" width="100%" />
 </div>
 
-<sub>Updated 12 Nov 2026, 10:49 PM IST.</sub>
+<sub>Updated 13 Nov 2026, 05:24 AM IST.</sub>
 
 <details>
 <summary><strong>Striver's A2Z tracker</strong></summary>
@@ -129,7 +129,7 @@ No solutions logged yet.
 
 | Week | Topics | Solved | Commits |
 |:---|:---|:---:|:---:|
-| 09 Nov - 12 Nov (current) | - | 0 | 12 |
+| 09 Nov - 13 Nov (current) | - | 0 | 12 |
 
 > The log is generated from my commits. Empty weeks are hidden and the current week is partial.
 
