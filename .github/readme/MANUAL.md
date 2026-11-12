@@ -627,8 +627,8 @@ Common edits:
 
 | Change | Where |
 | :--- | :--- |
-| Title text | `"DSA Progress, Visualized."` |
-| Subtitle | `f"Auto-generated from commits  ·  github.com/..."` |
+| Title text | `"DSA progress"` |
+| Subtitle | `"Generated from this repository on every push."` |
 | Card labels | `cards = [...]` |
 | Card colors | Last value of each `cards` tuple |
 | Overall bar gradient | `<linearGradient id="bar">` |
@@ -652,7 +652,7 @@ Common edits:
 
 | Change | Where |
 | :--- | :--- |
-| Title | `"A year of consistent practice."` |
+| Title | `"Commit activity"` |
 | Cell size / gap | `cell, gap = 13, 4` |
 | Grid position | `grid_x, grid_y = 120, 160` |
 | Heatmap colors | `level_colors = [...]` |
