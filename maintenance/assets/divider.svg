@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="96" viewBox="0 0 1200 96" role="img" aria-label="Pac-Man divider">
+<line x1="0" y1="48" x2="1200" y2="48" stroke="#334155" stroke-width="2" stroke-dasharray="2 10" stroke-linecap="round" opacity="0.7" />
+<path d="M 72 48 L 87 37 A 17 17 0 1 0 87 59 Z" fill="#facc15" />
+<circle cx="68" cy="39" r="2.2" fill="#0b1220" />
+<circle cx="116" cy="48" r="3" fill="#475569" />
+<circle cx="150" cy="48" r="3" fill="#475569" />
+<circle cx="184" cy="48" r="3" fill="#475569" />
+<circle cx="218" cy="48" r="3" fill="#475569" />
+<circle cx="252" cy="48" r="3" fill="#475569" />
+<circle cx="286" cy="48" r="3" fill="#475569" />
+<circle cx="320" cy="48" r="3" fill="#475569" />
+<circle cx="354" cy="48" r="3" fill="#475569" />
+<circle cx="388" cy="48" r="3" fill="#475569" />
+<circle cx="422" cy="48" r="3" fill="#475569" />
+<circle cx="456" cy="48" r="3" fill="#475569" />
+<circle cx="490" cy="48" r="3" fill="#475569" />
+<path d="M 606 50 A 14 14 0 0 1 634 50 L 634 64 L 628 58 L 622 64 L 616 58 L 610 64 L 606 58 Z" fill="#ef4444" />
+<circle cx="615" cy="46" r="3.6" fill="#f8fafc" />
+<circle cx="625" cy="46" r="3.6" fill="#f8fafc" />
+<circle cx="616" cy="47" r="1.6" fill="#0b1220" />
+<circle cx="626" cy="47" r="1.6" fill="#0b1220" />
+<path d="M 686 50 A 14 14 0 0 1 714 50 L 714 64 L 708 58 L 702 64 L 696 58 L 690 64 L 686 58 Z" fill="#f472b6" />
+<circle cx="695" cy="46" r="3.6" fill="#f8fafc" />
+<circle cx="705" cy="46" r="3.6" fill="#f8fafc" />
+<circle cx="696" cy="47" r="1.6" fill="#0b1220" />
+<circle cx="706" cy="47" r="1.6" fill="#0b1220" />
+<path d="M 766 50 A 14 14 0 0 1 794 50 L 794 64 L 788 58 L 782 64 L 776 58 L 770 64 L 766 58 Z" fill="#22d3ee" />
+<circle cx="775" cy="46" r="3.6" fill="#f8fafc" />
+<circle cx="785" cy="46" r="3.6" fill="#f8fafc" />
+<circle cx="776" cy="47" r="1.6" fill="#0b1220" />
+<circle cx="786" cy="47" r="1.6" fill="#0b1220" />
+<path d="M 846 50 A 14 14 0 0 1 874 50 L 874 64 L 868 58 L 862 64 L 856 58 L 850 64 L 846 58 Z" fill="#fb923c" />
+<circle cx="855" cy="46" r="3.6" fill="#f8fafc" />
+<circle cx="865" cy="46" r="3.6" fill="#f8fafc" />
+<circle cx="856" cy="47" r="1.6" fill="#0b1220" />
+<circle cx="866" cy="47" r="1.6" fill="#0b1220" />
+<text x="1140" y="52" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10.5" font-weight="600" fill="#64748b" text-anchor="end" letter-spacing="0.6">chasing better solutions</text>
+</svg>

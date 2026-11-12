@@ -15,6 +15,7 @@ from __future__ import annotations
 import html
 import json
 import math
+import random
 import re
 import subprocess
 from collections import Counter
@@ -516,7 +517,7 @@ def build_leetcode_section() -> str:
 
 def build_current_focus(stats: dict) -> str:
     if stats["solutions"]:
-        return f"**{stats['solutions'][0]['topic']}**"
+        return str(stats["solutions"][0]["topic"])
     return "DSA fundamentals"
 
 
@@ -832,6 +833,193 @@ def render_activity(stats: dict) -> str:
 
 
 # --------------------------------------------------------------------------- #
+# SVG: hero banner
+# --------------------------------------------------------------------------- #
+def render_hero(stats: dict) -> str:
+    """Render the README hero with a subtle Matrix-style code rain."""
+    width, height = 1200, 340
+    username = CONFIG["username"]
+    repo = CONFIG["repo"]
+    rng = random.Random(2026)
+    chars = "01{}[]<>/*+-=;:()&|#"
+    parts: list[str] = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
+        f'viewBox="0 0 {width} {height}" role="img" aria-label="DSA in C++ banner">',
+        "<defs>",
+        '<linearGradient id="heroBg" x1="0" y1="0" x2="1" y2="1">',
+        '<stop offset="0%" stop-color="#050a13" />',
+        '<stop offset="52%" stop-color="#07131c" />',
+        '<stop offset="100%" stop-color="#081622" />',
+        "</linearGradient>",
+        '<linearGradient id="heroTitle" x1="0" y1="0" x2="1" y2="0">',
+        '<stop offset="0%" stop-color="#f8fafc" />',
+        '<stop offset="62%" stop-color="#a5f3fc" />',
+        '<stop offset="100%" stop-color="#7dd3fc" />',
+        "</linearGradient>",
+        '<linearGradient id="heroLine" x1="0" y1="0" x2="1" y2="0">',
+        '<stop offset="0%" stop-color="#22d3ee" />',
+        '<stop offset="50%" stop-color="#2dd4bf" />',
+        '<stop offset="100%" stop-color="#a78bfa" />',
+        "</linearGradient>",
+        '<filter id="heroGlow" x="-50%" y="-50%" width="200%" height="200%">',
+        '<feGaussianBlur stdDeviation="60" />',
+        "</filter>",
+        "</defs>",
+        f'<rect width="{width}" height="{height}" rx="28" fill="url(#heroBg)" />',
+    ]
+
+    # Code rain: vertical trails on the right, faint traces on the left.
+    for column in range(18, width, 30):
+        length = rng.randint(5, 12)
+        start_y = rng.randint(-30, height - 40)
+        if column < 560:
+            length = min(length, 3)
+        for index in range(length):
+            y = start_y + index * 18
+            if not 0 <= y <= height:
+                continue
+            opacity = 0.035 if column < 560 else max(0.03, 0.22 - index * 0.018)
+            color = "#4ade80" if rng.random() < 0.45 else "#22d3ee"
+            parts.append(
+                svg_text(
+                    column,
+                    y,
+                    rng.choice(chars),
+                    rng.choice([9, 10, 11]),
+                    color,
+                    500,
+                    family=MONO,
+                    opacity=round(opacity, 2),
+                )
+            )
+
+    parts.extend(
+        [
+            '<rect x="0" y="0" width="1200" height="4" fill="url(#heroLine)" />',
+            '<circle cx="1030" cy="80" r="170" fill="#06b6d4" opacity="0.10" filter="url(#heroGlow)" />',
+            '<circle cx="760" cy="330" r="140" fill="#8b5cf6" opacity="0.07" filter="url(#heroGlow)" />',
+            '<rect x="64" y="44" width="268" height="30" rx="15" fill="#0b2838" stroke="#155e75" />',
+            '<circle cx="82" cy="59" r="4.5" fill="#22d3ee" />',
+            svg_text(
+                96,
+                63,
+                "DSA · C++ · PROBLEM SOLVING",
+                10.5,
+                "#67e8f9",
+                700,
+                letter_spacing=1.4,
+            ),
+            svg_text(64, 140, "DSA in C++", 62, "url(#heroTitle)", 800),
+            svg_text(66, 180, "Clean code. Clear thinking. Consistent practice.", 17, "#cbd5e1", 500),
+            svg_text(
+                66,
+                228,
+                "$ while (consistent) { solve(); learn(); repeat(); }",
+                13.5,
+                "#67e8f9",
+                500,
+                family=MONO,
+            ),
+            svg_text(66, 300, f"github.com/{username}/{repo}", 11, "#64748b", 500, family=MONO),
+            svg_text(
+                1136,
+                300,
+                "AUTO-UPDATED DAILY",
+                10,
+                "#475569",
+                700,
+                anchor="end",
+                letter_spacing=1.4,
+            ),
+        ]
+    )
+
+    # Binary tree: a quiet nod to the data structures behind the code.
+    nodes = [
+        (980, 96, 12, "#22d3ee"),
+        (900, 164, 10, "#2dd4bf"),
+        (1060, 164, 10, "#2dd4bf"),
+        (850, 232, 8, "#a78bfa"),
+        (940, 232, 8, "#4ade80"),
+        (1020, 232, 8, "#a78bfa"),
+        (1110, 232, 8, "#4ade80"),
+    ]
+    edges = [(0, 1), (0, 2), (1, 3), (1, 4), (2, 5), (2, 6)]
+    for parent, child in edges:
+        x1, y1 = nodes[parent][0], nodes[parent][1]
+        x2, y2 = nodes[child][0], nodes[child][1]
+        parts.append(
+            f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="#22d3ee" '
+            'stroke-width="1.4" opacity="0.28" />'
+        )
+    for x, y, radius, color in nodes:
+        parts.append(f'<circle cx="{x}" cy="{y}" r="{radius + 7}" fill="{color}" opacity="0.10" />')
+        parts.append(
+            f'<circle cx="{x}" cy="{y}" r="{radius}" fill="#0b1a2a" stroke="{color}" stroke-width="2" />'
+        )
+        parts.append(f'<circle cx="{x}" cy="{y}" r="2.4" fill="{color}" />')
+    parts.append(
+        svg_text(
+            980,
+            278,
+            "structure before speed",
+            10.5,
+            "#475569",
+            600,
+            anchor="middle",
+            letter_spacing=0.8,
+        )
+    )
+    parts.append("</svg>")
+    return "\n".join(parts)
+
+
+# --------------------------------------------------------------------------- #
+# SVG: Pac-Man divider
+# --------------------------------------------------------------------------- #
+def render_divider() -> str:
+    """Render a Pac-Man divider, a playful nod to graph traversal."""
+    width, height = 1200, 96
+    parts: list[str] = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
+        f'viewBox="0 0 {width} {height}" role="img" aria-label="Pac-Man divider">',
+        '<line x1="0" y1="48" x2="1200" y2="48" stroke="#334155" stroke-width="2" '
+        'stroke-dasharray="2 10" stroke-linecap="round" opacity="0.7" />',
+        '<path d="M 72 48 L 87 37 A 17 17 0 1 0 87 59 Z" fill="#facc15" />',
+        '<circle cx="68" cy="39" r="2.2" fill="#0b1220" />',
+    ]
+    for x in range(116, 520, 34):
+        parts.append(f'<circle cx="{x}" cy="48" r="3" fill="#475569" />')
+
+    ghosts = [(620, "#ef4444"), (700, "#f472b6"), (780, "#22d3ee"), (860, "#fb923c")]
+    for x, color in ghosts:
+        parts.append(
+            f'<path d="M {x - 14} 50 A 14 14 0 0 1 {x + 14} 50 '
+            f'L {x + 14} 64 L {x + 8} 58 L {x + 2} 64 L {x - 4} 58 '
+            f'L {x - 10} 64 L {x - 14} 58 Z" fill="{color}" />'
+        )
+        parts.append(f'<circle cx="{x - 5}" cy="46" r="3.6" fill="#f8fafc" />')
+        parts.append(f'<circle cx="{x + 5}" cy="46" r="3.6" fill="#f8fafc" />')
+        parts.append(f'<circle cx="{x - 4}" cy="47" r="1.6" fill="#0b1220" />')
+        parts.append(f'<circle cx="{x + 6}" cy="47" r="1.6" fill="#0b1220" />')
+
+    parts.append(
+        svg_text(
+            1140,
+            52,
+            "chasing better solutions",
+            10.5,
+            "#64748b",
+            600,
+            anchor="end",
+            letter_spacing=0.6,
+        )
+    )
+    parts.append("</svg>")
+    return "\n".join(parts)
+
+
+# --------------------------------------------------------------------------- #
 # Build everything
 # --------------------------------------------------------------------------- #
 def build_readme(stats: dict) -> str:
@@ -873,12 +1061,16 @@ def main() -> None:
     stats = collect_solutions()
 
     README_PATH.write_text(build_readme(stats), encoding="utf-8")
+    (ASSETS_DIR / "hero.svg").write_text(render_hero(stats), encoding="utf-8")
     (ASSETS_DIR / "dashboard.svg").write_text(render_dashboard(stats), encoding="utf-8")
     (ASSETS_DIR / "activity.svg").write_text(render_activity(stats), encoding="utf-8")
+    (ASSETS_DIR / "divider.svg").write_text(render_divider(), encoding="utf-8")
 
     print(
-        f"Rebuilt README.md, assets/dashboard.svg and assets/activity.svg "
-        f"({stats['total']} solutions, {stats['covered']}/{stats['total_topics']} topics, "
+        f"Rebuilt README.md, maintenance/assets/hero.svg, "
+        f"maintenance/assets/dashboard.svg, maintenance/assets/activity.svg and "
+        f"maintenance/assets/divider.svg ({stats['total']} solutions, "
+        f"{stats['covered']}/{stats['total_topics']} topics, "
         f"{stats['current_streak']}d streak)."
     )
 

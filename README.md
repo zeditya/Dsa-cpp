@@ -7,11 +7,13 @@
 <div align="center">
 
 <a href="https://github.com/zeditya/Dsa-cpp">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0b1220,30:0f172a,60:0f766e,100:06b6d4&height=230&section=header&text=DSA%20in%20C%2B%2B&fontSize=64&fontColor=ffffff&animation=fadeIn&fontAlignY=36&desc=Problem%20Solving%20%C2%B7%20Consistent%20Practice%20%C2%B7%20Clean%20Code&descAlignY=58&descSize=16" alt="DSA in C++" />
+  <img src="maintenance/assets/hero.svg" alt="DSA in C++ banner" width="100%" />
 </a>
 
+<br/>
+
 <a href="https://git.io/typing-svg">
-  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=20&duration=2800&pause=900&color=22D3EE&center=true&vCenter=true&width=760&lines=Data+Structures+%26+Algorithms+in+C%2B%2B;Clean+code.+Clear+thinking.+Consistent+practice.;Learning+in+public%2C+one+problem+at+a+time." alt="Typing SVG" />
+  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=18&duration=2600&pause=900&color=22D3EE&center=true&vCenter=true&width=760&lines=Data+Structures+%26+Algorithms+in+C%2B%2B;One+problem+at+a+time.;Learning+in+public%2C+shipping+consistently." alt="Typing SVG" />
 </a>
 
 <br/>
@@ -22,13 +24,19 @@
 
 </div>
 
-## Hi, I'm Aditya
+## Hey, I'm Aditya
 
-I'm a computer science student building a strong foundation in data structures, algorithms, and modern C++. This repository is my public practice log, where I solve problems consistently and focus on writing code I can explain.
+I'm a computer science student who enjoys turning messy problems into clean C++ solutions. This repository is my public practice log: data structures, algorithms, and the reasoning behind each solution.
 
-I care about clean implementation, clear reasoning, and steady progress.
+I optimize for three things: **code you can explain**, **decisions you can defend**, and **progress you can measure**.
 
-**Current focus:** DSA fundamentals
+> First, solve the problem. Then, write the code.
+
+<div align="center">
+
+`Focus` **DSA fundamentals**  ·  `Next milestone` **50 solutions**  ·  `Goal` **500 solutions**
+
+</div>
 
 ## Progress at a Glance
 
@@ -47,14 +55,68 @@ I care about clean implementation, clear reasoning, and steady progress.
 
 </div>
 
-<sub>Updated automatically from the repository on 12 Nov 2026, 08:48 PM IST.</sub>
+<sub>Auto-updated on 12 Nov 2026, 09:28 PM IST.</sub>
 
-## What You'll Find Here
+## What's Inside
 
 - **DSA solutions** organized by topic, from arrays and strings to graphs and dynamic programming.
-- **Clean C++** covering STL, object-oriented programming, and modern language features.
-- **Problem analysis** with time and space complexity notes plus the approach behind each solution.
-- **Consistent practice** tracked automatically from the repository's commit history.
+- **Clean C++** using the STL, object-oriented design, and modern language features.
+- **Problem analysis** covering the approach, time complexity, and space complexity of each solution.
+- **A visible habit** tracked automatically from the repository's commit history.
+
+## How I Approach a Problem
+
+1. **Read the constraints.** The bounds usually hint at the intended complexity.
+2. **Solve it simply.** Start with a brute-force version that is correct.
+3. **Remove repeated work.** Apply the right pattern or data structure.
+4. **Explain the trade-off.** Document time and space complexity, then refactor.
+
+## Learning Roadmap
+
+<details>
+<summary><b>Open the full roadmap</b></summary>
+
+<br/>
+
+### Phase 1 · Foundations
+`0 / 9 topics started`
+
+- [ ] ⚙️ **C++ & STL**
+- [ ] 🧮 **Arrays**
+- [ ] 🔤 **Strings**
+- [ ] 🔀 **Sorting**
+- [ ] 🎯 **Binary Search**
+- [ ] 👉 **Two Pointers**
+- [ ] 🪟 **Sliding Window**
+- [ ] ➗ **Math**
+- [ ] 🔢 **Bit Manipulation**
+
+### Phase 2 · Core Data Structures
+`0 / 6 topics started`
+
+- [ ] 🔗 **Linked List**
+- [ ] 🥞 **Stack & Queue**
+- [ ] 🗃️ **Hashing**
+- [ ] 🌳 **Trees & BST**
+- [ ] ⛰️ **Heaps**
+- [ ] 🌲 **Tries**
+
+### Phase 3 · Algorithms
+`0 / 5 topics started`
+
+- [ ] 🌀 **Recursion**
+- [ ] 🧩 **Backtracking**
+- [ ] 💡 **Greedy**
+- [ ] 🕸️ **Graphs**
+- [ ] 🧠 **Dynamic Programming**
+
+### Phase 4 · Advanced
+`0 / 2 topics started`
+
+- [ ] 📊 **Segment Trees**
+- [ ] 📦 **Misc**
+
+</details>
 
 ## Recent Work
 
@@ -93,9 +155,11 @@ I care about clean implementation, clear reasoning, and steady progress.
   <img src="https://skillicons.dev/icons?i=cpp,c,python,git,github,githubactions,vscode,linux,bash,cmake&theme=dark" alt="Tech stack" />
 </div>
 
+<img src="maintenance/assets/divider.svg" alt="Pac-Man divider" width="100%" />
+
 ## Let's Connect
 
-I'm always open to feedback, collaboration, and interesting problems.
+I'm open to internships, collaborations, and good problem-solving conversations.
 
 <div align="center">
 
