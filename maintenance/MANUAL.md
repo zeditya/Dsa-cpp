@@ -1,8 +1,8 @@
 # 📘 Repository Manual
 
-> **This file is manually maintained.** `README.md` is auto-generated — never edit it directly.
-> Source of truth for the README: **`scripts/readme_template.md`**
-> Source of truth for the data/settings: **`scripts/config.json`**
+> **This file is manually maintained.** `README.md` is auto-generated: never edit it directly.
+> Source of truth for the README: **`maintenance/scripts/readme_template.md`**
+> Source of truth for the data/settings: **`maintenance/scripts/config.json`**
 
 ---
 
@@ -41,15 +41,15 @@ This repo is a **living DSA + C++ practice journal**:
   - a 365-day commit heatmap
 - The script regenerates:
   - `README.md`
-  - `assets/dashboard.svg`
-  - `assets/activity.svg`
+  - `maintenance/assets/dashboard.svg`
+  - `maintenance/assets/activity.svg`
 - GitHub Actions runs the script:
   - on every push to `main`
   - daily at **00:15 IST** (`18:45 UTC`)
   - manually, from the Actions tab
 - A second workflow generates the contribution-snake animation and publishes it to the `output` branch.
 
-The result: **set it and forget it.** Push code, and the showcase updates itself.
+Push code, and the showcase updates itself.
 
 ---
 
@@ -58,22 +58,28 @@ The result: **set it and forget it.** Push code, and the showcase updates itself
 ```text
 Dsa-cpp/
 ├── README.md                        ← AUTO-GENERATED, do not edit
-├── MANUAL.md                        ← this manual (safe to edit)
+├── DSA/                             ← your data structures and algorithms work
+├── CPP/                             ← your C++ notes and practice
+├── maintenance/                     ← everything used to maintain the repo
+│   ├── MANUAL.md                    ← this manual
+│   ├── assets/
+│   │   ├── dashboard.svg            ← AUTO-GENERATED dashboard
+│   │   └── activity.svg             ← AUTO-GENERATED heatmap
+│   ├── scripts/
+│   │   ├── config.json              ← targets, topics, phases, timezone
+│   │   ├── readme_template.md       ← edit this to change the README
+│   │   └── update_readme.py         ← generator (no external dependencies)
+│   └── templates/
+│       └── solution.cpp             ← copy-paste solution template
 ├── .github/
 │   └── workflows/
-│       ├── update-readme.yml        ← rebuilds README + assets
-│       └── snake.yml                ← generates snake SVGs on `output` branch
-├── assets/
-│   ├── dashboard.svg                ← AUTO-GENERATED dashboard
-│   └── activity.svg                 ← AUTO-GENERATED heatmap
-├── scripts/
-│   ├── config.json                  ← targets, topics, phases, timezone
-│   ├── readme_template.md           ← EDIT THIS to change README design/copy
-│   └── update_readme.py             ← generator (no external dependencies)
-├── templates/
-│   └── solution.cpp                 ← copy-paste solution template
+│       ├── update-readme.yml        ← rebuilds README and assets
+│       └── snake.yml                ← generates snake SVGs on the output branch
 └── .gitignore
 ```
+
+The `maintenance/` folder is the only non-code folder at the root. Your own code
+can live in `DSA/`, `CPP/`, or any folder structure you prefer.
 
 Your actual solutions can live anywhere. Recommended:
 
@@ -246,10 +252,10 @@ git push
 That's it. On push:
 
 1. `Update README` recalculates every statistic.
-2. `README.md`, `assets/dashboard.svg`, and `assets/activity.svg` are committed by the bot.
+2. `README.md`, `maintenance/assets/dashboard.svg`, and `maintenance/assets/activity.svg` are committed by the bot.
 3. `Generate Snake` refreshes the `output` branch.
 
-> Pull before starting work. The bot commits to `README.md` and `assets/`, so a
+> Pull before starting work. The bot commits to `README.md` and `maintenance/assets/`, so a
 > `git pull --rebase` avoids unnecessary conflicts.
 
 ---
@@ -262,7 +268,7 @@ File: `.github/workflows/update-readme.yml`
 
 Triggers:
 
-- push to `main` (except changes only under `README.md`, `assets/**`, `output/**`)
+- push to `main` (except changes only under `README.md`, `maintenance/assets/**`, `output/**`)
 - daily at `18:45 UTC` = `00:15 IST`
 - manual `workflow_dispatch`
 
@@ -270,8 +276,8 @@ Steps:
 
 1. Check out with `fetch-depth: 0` (full history is needed for streak/heatmap data).
 2. Install Python 3.12.
-3. Run `python scripts/update_readme.py`.
-4. Commit `README.md` and `assets/` with `[skip ci]`.
+3. Run `python maintenance/scripts/update_readme.py`.
+4. Commit `README.md` and `maintenance/assets/` with `[skip ci]`.
 5. Push using the workflow's `GITHUB_TOKEN`.
 
 The `paths-ignore` and `[skip ci]` prevent an infinite workflow loop.
@@ -311,14 +317,14 @@ https://raw.githubusercontent.com/zeditya/Dsa-cpp/output/github-contribution-gri
 
 ### 6.1 The golden rule
 
-**Edit `scripts/readme_template.md`, not `README.md`.**
+**Edit `maintenance/scripts/readme_template.md`, not `README.md`.**
 
 `README.md` is overwritten on every push. Changes made directly to it will be
 lost the next time the workflow runs.
 
 ### 6.2 Change text, headings, quotes, or links
 
-Edit `scripts/readme_template.md` directly. Examples:
+Edit `maintenance/scripts/readme_template.md` directly. Examples:
 
 - intro paragraph
 - “Hey, I'm Aditya” section
@@ -332,8 +338,8 @@ Edit `scripts/readme_template.md` directly. Examples:
 Then either:
 
 ```bash
-python3 scripts/update_readme.py
-git add README.md assets/ scripts/readme_template.md
+python3 maintenance/scripts/update_readme.py
+git add README.md maintenance/assets/ maintenance/scripts/readme_template.md
 git commit -m "docs: update README copy"
 git push
 ```
@@ -342,7 +348,7 @@ or just push the template change and let the Action regenerate it.
 
 ### 6.3 Add a new static section
 
-Add normal Markdown to `scripts/readme_template.md`:
+Add normal Markdown to `maintenance/scripts/readme_template.md`:
 
 ```markdown
 ## 🎧 What I'm Listening To
@@ -363,7 +369,7 @@ Use a placeholder in the template:
 ```
 
 Then add the value to the `replacements` dictionary in
-`scripts/update_readme.py` inside `build_readme()`:
+`maintenance/scripts/update_readme.py` inside `build_readme()`:
 
 ```python
 "{{CURRENT_FOCUS}}": build_current_focus(stats),
@@ -405,7 +411,7 @@ The banner uses `capsule-render`:
 <img src="https://capsule-render.vercel.app/api?type=waving&color=...&text=DSA%20%C3%97%20C%2B%2B..." />
 ```
 
-Edit the query string in `scripts/readme_template.md`.
+Edit the query string in `maintenance/scripts/readme_template.md`.
 
 Useful parameters:
 
@@ -439,11 +445,11 @@ Add or edit shields.io images in the template:
 ```
 
 The generated stat badges come from `build_stat_badges()` in
-`scripts/update_readme.py` if you want to change their colors or labels.
+`maintenance/scripts/update_readme.py` if you want to change their colors or labels.
 
 ### 6.9 Change the GitHub stats / streak / trophy cards
 
-These are external images in `scripts/readme_template.md`:
+These are external images in `maintenance/scripts/readme_template.md`:
 
 - `github-readme-stats.vercel.app`
 - `streak-stats.demolab.com`
@@ -454,7 +460,7 @@ Change the query parameters (`theme=tokyonight`, `hide_border=true`, etc.) or
 remove the sections entirely.
 
 > If one of these services is rate-limited or down, the image may fail to load.
-> The custom `assets/dashboard.svg` and `assets/activity.svg` do not depend on
+> The custom `maintenance/assets/dashboard.svg` and `maintenance/assets/activity.svg` do not depend on
 > them.
 
 ### 6.10 Change the snake section
@@ -472,19 +478,19 @@ Available palettes are documented by `platane/snk`.
 
 ### 6.11 Remove a section
 
-Delete it from `scripts/readme_template.md`. If it was a dynamic section, you can
+Delete it from `maintenance/scripts/readme_template.md`. If it was a dynamic section, you can
 also remove its placeholder and the corresponding entry in `build_readme()`.
 
 ### 6.12 Reorder sections
 
-Cut and paste sections in `scripts/readme_template.md`. Keep the
+Cut and paste sections in `maintenance/scripts/readme_template.md`. Keep the
 `<!-- AUTO-GENERATED -->` comment at the top.
 
 ---
 
 ## 7. Changing the dashboard and heatmap
 
-These are generated by `scripts/update_readme.py`.
+These are generated by `maintenance/scripts/update_readme.py`.
 
 ### 7.1 Dashboard layout
 
@@ -501,7 +507,7 @@ Common edits:
 
 | Change | Where |
 | :--- | :--- |
-| Title text | `"The Grind, Visualized."` |
+| Title text | `"DSA Progress, Visualized."` |
 | Subtitle | `f"Auto-generated from commits  ·  github.com/..."` |
 | Card labels | `cards = [...]` |
 | Card colors | Last value of each `cards` tuple |
@@ -526,7 +532,7 @@ Common edits:
 
 | Change | Where |
 | :--- | :--- |
-| Title | `"Every square is a day you showed up."` |
+| Title | `"A year of consistent practice."` |
 | Cell size / gap | `cell, gap = 13, 4` |
 | Grid position | `grid_x, grid_y = 120, 160` |
 | Heatmap colors | `level_colors = [...]` |
@@ -546,14 +552,14 @@ In `main()`:
 ```
 
 If you rename them, update the template image paths and the workflow's
-`git add README.md assets/`.
+`git add README.md maintenance/assets/`.
 
 ### 7.4 Add a completely new generated asset
 
 1. Write a `render_*.svg` function.
-2. Call it in `main()` and write the file under `assets/`.
-3. Embed it in `scripts/readme_template.md`.
-4. Ensure the workflow commits it (`git add README.md assets/` already covers `assets/`).
+2. Call it in `main()` and write the file under `maintenance/assets/`.
+3. Embed it in `maintenance/scripts/readme_template.md`.
+4. Ensure the workflow commits it (`git add README.md maintenance/assets/` already covers `maintenance/assets/`).
 5. Run locally to verify.
 
 ---
@@ -564,7 +570,7 @@ If you rename them, update the template image paths and the workflow's
 
 ```bash
 mkdir -p DSA/Arrays
-cp templates/solution.cpp DSA/Arrays/0001-two-sum.cpp
+cp maintenance/templates/solution.cpp DSA/Arrays/0001-two-sum.cpp
 ```
 
 Use any of these naming styles:
@@ -611,10 +617,10 @@ It reads the first **80 lines** and supports `//`, `#`, `/* ... */`, `*`, and
 
 Priority order:
 
-1. **Metadata `Topic:`** — exact match to a topic name or keyword.
-2. **Folder name** — exact match to a topic name or keyword.
-3. **Keyword search** — longest matching keyword across the path and filename.
-4. **Fallback** — `Misc`.
+1. **Metadata `Topic:`**: exact match to a topic name or keyword.
+2. **Folder name**: exact match to a topic name or keyword.
+3. **Keyword search**: longest matching keyword across the path and filename.
+4. **Fallback**: `Misc`.
 
 Examples:
 
@@ -645,9 +651,9 @@ This file is counted under **Arrays** only. This keeps total counts accurate.
 The script counts every file with an allowed extension. To keep notes out of the
 stats:
 
-- put them under an excluded folder (`docs/`, `scripts/`, `templates/`), or
+- put them under `maintenance/` or another excluded folder such as `docs/`, or
 - use a non-code extension such as `.md`, or
-- add the folder to `exclude_dirs` in `scripts/config.json`.
+- add the folder to `exclude_dirs` in `maintenance/scripts/config.json`.
 
 ### 8.6 Adding another language
 
@@ -662,10 +668,10 @@ default; add one in the template if desired.
 
 ### 8.7 Excluding folders
 
-In `scripts/config.json`:
+In `maintenance/scripts/config.json`:
 
 ```json
-"exclude_dirs": [".git", ".github", "scripts", "templates", "assets", "docs", "build", "bin"]
+"exclude_dirs": [".git", ".github", ".vscode", ".idea", "maintenance", "scripts", "templates", "assets", "docs", "build", "bin", "node_modules"]
 ```
 
 This matches **any path segment** with that exact name. It is not a glob.
@@ -679,7 +685,7 @@ This matches **any path segment** with that exact name. It is not a glob.
 
 ### 9.1 Add a new topic
 
-In `scripts/config.json`, add an object to `topics`:
+In `maintenance/scripts/config.json`, add an object to `topics`:
 
 ```json
 {
@@ -701,7 +707,7 @@ Then add it to a phase if you want it on the roadmap:
 Run:
 
 ```bash
-python3 scripts/update_readme.py
+python3 maintenance/scripts/update_readme.py
 ```
 
 The dashboard, topic table, and roadmap pick it up automatically.
@@ -767,13 +773,13 @@ at least one solution.
 ## 10. Running the generator locally
 
 ```bash
-python3 scripts/update_readme.py
+python3 maintenance/scripts/update_readme.py
 ```
 
 It prints something like:
 
 ```text
-Rebuilt README.md, assets/dashboard.svg and assets/activity.svg
+Rebuilt README.md, maintenance/assets/dashboard.svg and maintenance/assets/activity.svg
 (14 solutions, 10/22 topics, 3d streak).
 ```
 
@@ -792,8 +798,8 @@ Preview the SVGs:
 
 ```bash
 # Linux, if ImageMagick is installed
-magick assets/dashboard.svg /tmp/dashboard.png
-magick assets/activity.svg /tmp/activity.png
+magick maintenance/assets/dashboard.svg /tmp/dashboard.png
+magick maintenance/assets/activity.svg /tmp/activity.png
 ```
 
 Or open them directly in a browser.
@@ -853,7 +859,7 @@ on:
 ```
 
 You can add `paths` / `paths-ignore` filters, but keep `README.md`,
-`assets/**`, and `output/**` ignored to prevent loops.
+`maintenance/assets/**`, and `output/**` ignored to prevent loops.
 
 ### 11.5 Disable the daily refresh but keep push refresh
 
@@ -946,11 +952,11 @@ gh auth setup-git
 ### 12.6 The README was overwritten
 
 That is expected if you edited `README.md` directly. Restore your changes into
-`scripts/readme_template.md`, then run:
+`maintenance/scripts/readme_template.md`, then run:
 
 ```bash
-python3 scripts/update_readme.py
-git add README.md assets/ scripts/readme_template.md
+python3 maintenance/scripts/update_readme.py
+git add README.md maintenance/assets/ maintenance/scripts/readme_template.md
 git commit -m "docs: restore README design"
 git push
 ```
@@ -985,7 +991,7 @@ Check:
 - Run locally and read the printed count:
 
 ```bash
-python3 scripts/update_readme.py
+python3 maintenance/scripts/update_readme.py
 ```
 
 ### 12.10 A solution is in the wrong topic
@@ -1024,22 +1030,22 @@ git pull --rebase
 git push
 ```
 
-If there is a conflict in `README.md` or `assets/`, discard your local generated
+If there is a conflict in `README.md` or `maintenance/assets/`, discard your local generated
 files and regenerate:
 
 ```bash
-git checkout --theirs README.md assets/
+git checkout --theirs README.md maintenance/assets/
 # or
-git restore --source=origin/main README.md assets/
-python3 scripts/update_readme.py
+git restore --source=origin/main README.md maintenance/assets/
+python3 maintenance/scripts/update_readme.py
 ```
 
-For template conflicts, resolve `scripts/readme_template.md` manually.
+For template conflicts, resolve `maintenance/scripts/readme_template.md` manually.
 
 ### 12.14 The generator fails with unresolved placeholders
 
 You used a `{{PLACEHOLDER}}` in the template without adding it to
-`build_readme()` in `scripts/update_readme.py`.
+`build_readme()` in `maintenance/scripts/update_readme.py`.
 
 Either add the replacement or remove the placeholder.
 
@@ -1085,7 +1091,7 @@ You can keep the generated README and assets; they are normal files.
 
 ```bash
 git log --oneline -- README.md
-git checkout <COMMIT> -- README.md assets/
+git checkout <COMMIT> -- README.md maintenance/assets/
 git commit -m "docs: restore previous README"
 git push
 ```
@@ -1093,9 +1099,9 @@ git push
 ### 13.4 Start over
 
 ```bash
-git checkout <COMMIT> -- scripts/ assets/ README.md
-python3 scripts/update_readme.py
-git add README.md assets/ scripts/
+git checkout <COMMIT> -- maintenance/scripts/ maintenance/assets/ README.md
+python3 maintenance/scripts/update_readme.py
+git add README.md maintenance/assets/ maintenance/scripts/
 git commit -m "docs: rebuild README system"
 git push
 ```
@@ -1128,7 +1134,7 @@ git commit -m "solve: problem name"
 git push
 
 # run generator locally
-python3 scripts/update_readme.py
+python3 maintenance/scripts/update_readme.py
 
 # verify auth
 gh auth status
@@ -1148,21 +1154,21 @@ gh workflow run snake.yml --repo zeditya/Dsa-cpp
 
 | Goal | File |
 | :--- | :--- |
-| Change README text/design | `scripts/readme_template.md` |
-| Change targets/topics/phases/timezone | `scripts/config.json` |
-| Change dashboard/heatmap visuals | `scripts/update_readme.py` |
+| Change README text/design | `maintenance/scripts/readme_template.md` |
+| Change targets/topics/phases/timezone | `maintenance/scripts/config.json` |
+| Change dashboard/heatmap visuals | `maintenance/scripts/update_readme.py` |
 | Add a solution | `DSA/<Topic>/...` |
 | Change automation schedule | `.github/workflows/update-readme.yml` |
 | Change snake settings | `.github/workflows/snake.yml` |
-| Document a new workflow | `MANUAL.md` (this file) |
+| Document a new workflow | `maintenance/MANUAL.md` (this file) |
 
 ### Files you should not edit
 
 | File | Why |
 | :--- | :--- |
 | `README.md` | Regenerated on every push |
-| `assets/dashboard.svg` | Regenerated by the script |
-| `assets/activity.svg` | Regenerated by the script |
+| `maintenance/assets/dashboard.svg` | Regenerated by the script |
+| `maintenance/assets/activity.svg` | Regenerated by the script |
 
 ---
 

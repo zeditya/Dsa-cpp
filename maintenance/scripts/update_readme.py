@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
-Rebuild README.md, assets/dashboard.svg and assets/activity.svg from the repo.
+Rebuild README.md, maintenance/assets/dashboard.svg and
+maintenance/assets/activity.svg from the repo.
 
 The script is intentionally dependency-free (Python standard library only) so
 GitHub Actions can run it without installing anything.
 
 Run locally:
-    python3 scripts/update_readme.py
+    python3 maintenance/scripts/update_readme.py
 """
 
 from __future__ import annotations
@@ -22,11 +23,22 @@ from pathlib import Path, PurePosixPath
 from urllib.parse import quote
 from zoneinfo import ZoneInfo
 
-ROOT = Path(__file__).resolve().parent.parent
-CONFIG_PATH = ROOT / "scripts" / "config.json"
-TEMPLATE_PATH = ROOT / "scripts" / "readme_template.md"
+def find_repo_root(start: Path) -> Path:
+    """Walk up from the script until the repository root is found."""
+    for candidate in [start, *start.parents]:
+        if (candidate / ".git").exists():
+            return candidate
+    for candidate in [start, *start.parents]:
+        if (candidate / "README.md").exists():
+            return candidate
+    return start.parents[1] if len(start.parents) > 1 else start
+
+
+ROOT = find_repo_root(Path(__file__).resolve().parent)
+CONFIG_PATH = ROOT / "maintenance" / "scripts" / "config.json"
+TEMPLATE_PATH = ROOT / "maintenance" / "scripts" / "readme_template.md"
 README_PATH = ROOT / "README.md"
-ASSETS_DIR = ROOT / "assets"
+ASSETS_DIR = ROOT / "maintenance" / "assets"
 
 SANS = "Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif"
 MONO = "'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace"
@@ -382,8 +394,6 @@ def collect_solutions() -> list[dict]:
 # Markdown fragments
 # --------------------------------------------------------------------------- #
 def build_stat_badges(stats: dict) -> str:
-    username = CONFIG["username"]
-    repo = CONFIG["repo"]
     total = stats["total"]
     streak = stats["current_streak"]
     covered = stats["covered"]
@@ -412,11 +422,6 @@ def build_stat_badges(stats: dict) -> str:
             "?style=for-the-badge&logo=googlecalendar&logoColor=white",
             "Active days",
         ),
-        (
-            f"https://img.shields.io/github/last-commit/{username}/{repo}"
-            "?label=Last%20Commit&style=for-the-badge&color=64748B&logo=git&logoColor=white",
-            "Last commit",
-        ),
     ]
     return "\n".join(f'  <img src="{src}" alt="{alt}" />' for src, alt in badges)
 
@@ -441,15 +446,15 @@ def build_recent_table(stats: dict) -> str:
     solutions = stats["solutions"]
     if not solutions:
         return (
-            "> 🚀 **No solutions tracked yet.** Add your first file under `DSA/Arrays/` "
-            "and this table will populate itself on the next push."
+            "> The first solutions are on the way. "
+            "This section updates automatically as new problems are completed."
         )
 
     rows = [
         "| Problem | Topic | Difficulty | Added | Code |",
         "| :--- | :--- | :---: | :---: | :---: |",
     ]
-    for item in solutions[:8]:
+    for item in solutions[:5]:
         title = item["title"].replace("|", "\\|")
         if item["link"]:
             problem_cell = f"[**{title}**]({item['link']})"
@@ -469,8 +474,8 @@ def build_recent_table(stats: dict) -> str:
         )
 
     table = "\n".join(rows)
-    if len(solutions) > 8:
-        table += f"\n\n<sub>Showing the 8 most recent of **{len(solutions)}** tracked files.</sub>"
+    if len(solutions) > 5:
+        table += f"\n\n<sub>Showing the 5 most recent of **{len(solutions)}** tracked files.</sub>"
     return table
 
 
@@ -487,7 +492,7 @@ def build_roadmap(stats: dict) -> str:
             icon = TOPIC_ICONS.get(name, "•")
             if count:
                 plural = "s" if count != 1 else ""
-                lines.append(f"- [x] {icon} **{name}** — {count} solution{plural}")
+                lines.append(f"- [x] {icon} **{name}**: {count} solution{plural}")
             else:
                 lines.append(f"- [ ] {icon} **{name}**")
         lines.append("")
@@ -512,7 +517,7 @@ def build_leetcode_section() -> str:
 def build_current_focus(stats: dict) -> str:
     if stats["solutions"]:
         return f"**{stats['solutions'][0]['topic']}**"
-    return "the fundamentals — first solution loading…"
+    return "DSA fundamentals"
 
 
 def build_next_milestone(stats: dict) -> str:
@@ -571,20 +576,20 @@ def render_dashboard(stats: dict) -> str:
         '<rect x="60" y="42" width="168" height="28" rx="14" fill="#0b2838" stroke="#155e75" />',
         '<circle cx="78" cy="56" r="4.5" fill="#22d3ee" />',
         svg_text(92, 60, "LIVE DSA DASHBOARD", 10.5, "#67e8f9", 700, letter_spacing=1.4),
-        svg_text(60, 118, "The Grind, Visualized.", 36, "#f8fafc", 700),
+        svg_text(60, 118, "DSA Progress, Visualized.", 36, "#f8fafc", 700),
         svg_text(
             60,
             144,
-            f"Auto-generated from commits  ·  github.com/{username}/{repo}",
+            "A live view of consistent practice and problem solving.",
             12,
             "#94a3b8",
         ),
     ]
 
     cards = [
-        ("SOLUTIONS", str(total), "code files tracked", "#22d3ee"),
-        ("CURRENT STREAK", f"{stats['current_streak']}d", "keep the chain alive", "#fb923c"),
-        ("TOPICS", f"{stats['covered']}/{stats['total_topics']}", "coverage unlocked", "#a78bfa"),
+        ("SOLUTIONS", str(total), "solutions tracked", "#22d3ee"),
+        ("CURRENT STREAK", f"{stats['current_streak']}d", "consecutive active days", "#fb923c"),
+        ("TOPICS", f"{stats['covered']}/{stats['total_topics']}", "topics practiced", "#a78bfa"),
         ("ACTIVE DAYS", str(stats["active_days"]), "days with commits", "#4ade80"),
     ]
     card_y = 166
@@ -738,7 +743,7 @@ def render_activity(stats: dict) -> str:
         '<rect x="60" y="36" width="180" height="26" rx="13" fill="#0b2a1a" stroke="#166534" />',
         '<circle cx="78" cy="49" r="4.5" fill="#4ade80" />',
         svg_text(92, 53, "CONSISTENCY MAP", 10, "#86efac", 700, letter_spacing=1.3),
-        svg_text(60, 106, "Every square is a day you showed up.", 26, "#f8fafc", 700),
+        svg_text(60, 106, "A year of consistent practice.", 26, "#f8fafc", 700),
         svg_text(
             60,
             128,

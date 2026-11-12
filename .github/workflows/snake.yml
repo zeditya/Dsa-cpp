@@ -10,7 +10,7 @@ on:
     paths-ignore:
       - "output/**"
       - "README.md"
-      - "assets/**"
+      - "maintenance/**"
 
 permissions:
   contents: write
