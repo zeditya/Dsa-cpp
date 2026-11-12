@@ -12,39 +12,29 @@
 
 <br/>
 
-<img src=".github/readme/assets/grind.gif" alt="I'm ready to slay: the DSA grind" width="620" />
+<img src=".github/readme/assets/grind.gif" alt="I'm ready to slay" width="620" />
 
 <br/>
 
-**Consistency over intensity. Every day. Until graduation and beyond.**
-
-**[The Goal](#-the-goal) • [Tracker](#-progress-tracker) • [Milestones](#-milestones) • [Method](#-my-method) • [Weekly Log](#-weekly-log) • [Resources](#-resources)**
+**[What this is](#what-this-is) • [Progress](#progress) • [How I practice](#how-i-practice) • [Activity](#activity) • [Repo](#repo) • [Resources](#resources) • [Connect](#connect)**
 
 </div>
 
 ---
 
-## 🎯 The Goal
+## What this is
 
-> Become an elite problem solver. Solve problems daily, learn every pattern deeply, and build a record that speaks for itself, **until graduation and beyond**.
+This is where I practice data structures and algorithms in C++. Each solution lives here with a short note on the pattern, the approach, and the time and space complexity.
 
-{{GOAL_TABLE}}
+I'm working through [Striver's A2Z sheet](https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2/), but I'm not trying to finish it as fast as possible. I'd rather understand a problem properly, come back to it after a few days, and be able to solve something similar on my own.
 
-`Next milestone` {{NEXT_MILESTONE}}
+The goal is simple: get good enough at the basics that new problems stop looking unfamiliar.
 
 ---
 
-## 📊 Progress Tracker
+## Progress
 
-### Overall
-
-```text
-{{OVERALL_PROGRESS}}
-```
-
-> The bar is generated from the current repository. Every new solution moves it.
-
-### Stats at a glance
+**{{TOTAL_SOLUTIONS}} / {{TARGET_PROBLEMS}} solved ({{PROGRESS_PCT}}%)**
 
 {{STATS_TABLE}}
 
@@ -52,66 +42,50 @@
   <img src=".github/readme/assets/dashboard.svg" alt="DSA progress dashboard" width="100%" />
 </div>
 
-<sub>Auto-updated on {{LAST_UPDATED}}.</sub>
+<sub>Updated {{LAST_UPDATED}}.</sub>
 
-### Striver's A2Z: Step by Step
+### Striver's A2Z
 
-Status key: ⬜ Not started • 🟨 In progress • 🟩 All mapped topics started
+Status: ⬜ Not started • 🟨 In progress • 🟩 All mapped topics started
 
 {{STRIVER_TABLE}}
 
-> Coverage tracks topics started, not every problem in the sheet. It updates from the folders and metadata in this repository.
+> Coverage counts topics started, not every problem in the sheet. It comes from the folders and metadata in this repo.
 
----
-
-## 🏅 Milestones
+<details>
+<summary><strong>Milestones</strong></summary>
 
 {{MILESTONES}}
 
-> Every checkbox is recalculated from the repository. Nothing is updated by hand.
+</details>
 
 ---
 
-## 🧠 My Method
+## How I practice
 
-Every problem goes through the same loop:
+1. Try the problem for 20-30 minutes without help.
+2. If I'm stuck, read only enough to understand the idea, then close the solution.
+3. Rewrite it from memory.
+4. Write down the pattern and the mistake I made.
+5. Solve it again after 3 days, and once more after 2-3 weeks.
 
-```text
-┌─────────────────────────────────────────────────────────┐
-│  1. THINK    20-30 min on paper, no help                │
-│  2. HINT     only the technique name, then retry        │
-│  3. LEARN    read/watch solution, then CLOSE IT         │
-│  4. CODE     rewrite from scratch, from memory          │
-│  5. NOTE     pattern + mistake, then save the note      │
-│  6. REVISE   re-solve after 3 days, then after 2-3 wks  │
-└─────────────────────────────────────────────────────────┘
-```
-
-**Rules I follow**
-
-- Only push code I fully understand and can explain out loud
-- Never skip the revision step
-- Track topics mastered, not just days
-- Rest one day a week. Burnout is the real enemy
-- Exam weeks: minimum 1 problem, no guilt
+I only commit code I can explain. If I can't explain it, I haven't learned it yet.
 
 ---
 
-## 🚀 Recent Work
+## Activity
+
+### Recent work
 
 {{RECENT_TABLE}}
 
----
-
-## 🗓️ Weekly Log
+### Weekly log
 
 {{WEEKLY_LOG}}
 
-> Auto-generated from git history. The current week is partial.
+> The log is generated from my commits. The current week is partial.
 
----
-
-## 🔥 Consistency
+### Heatmap
 
 <div align="center">
   <img src=".github/readme/assets/activity.svg" alt="Commit activity for the last 365 days" width="100%" />
@@ -125,17 +99,17 @@ Every problem goes through the same loop:
   </picture>
 </div>
 
-> The heatmap shows the habit. The snake eats the contributions.
+> Heatmap for the last 365 days. The snake is generated from the same contributions.
 
 ---
 
-## 📁 Repo Structure
+## Repo
 
 ```text
 {{REPO_TREE}}
 ```
 
-Every solution file starts with a short metadata header:
+Each solution starts with a short header:
 
 ```cpp
 // Problem  : <name> | <link>
@@ -145,41 +119,39 @@ Every solution file starts with a short metadata header:
 // Revised  : [ ] 3 days   [ ] 2-3 weeks
 ```
 
-### Running a solution
+Run a file with:
 
 ```bash
 g++ -std=c++17 -O2 -Wall solution.cpp -o solution && ./solution
 ```
 
-### Toolbox
-
-`C++17` • `STL` • `Git` • `GitHub Actions` • `VS Code` • `Linux` • `CMake`
+**Toolbox:** `C++17` • `STL` • `Git` • `GitHub Actions` • `VS Code` • `Linux` • `CMake`
 
 ---
 
 {{CONTEST_SECTION}}
 
-## 📚 Resources
+## Resources
 
 | Purpose | Resource |
 |:---|:---|
-| 🗺️ Main roadmap | [Striver's A2Z DSA Sheet](https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2/) |
-| 📖 C++ reference | [learncpp.com](https://www.learncpp.com/) • [cppreference.com](https://en.cppreference.com/) |
-| 🎥 Video lectures | [take U forward](https://www.youtube.com/@takeUforward) |
-| 🧮 Concepts | [Abdul Bari](https://www.youtube.com/@abdul_bari) |
-| 🏋️ Practice | [LeetCode](https://leetcode.com/) • [CSES Problem Set](https://cses.fi/problemset/) |
-| 🏁 Contests | [Codeforces](https://codeforces.com/) • [CodeChef](https://www.codechef.com/) |
-| 📘 Advanced | [CP-Algorithms](https://cp-algorithms.com/) • *Competitive Programmer's Handbook* |
+| DSA sheet | [Striver's A2Z DSA Sheet](https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2/) |
+| C++ reference | [learncpp.com](https://www.learncpp.com/) • [cppreference.com](https://en.cppreference.com/) |
+| Video lectures | [take U forward](https://www.youtube.com/@takeUforward) |
+| Concepts | [Abdul Bari](https://www.youtube.com/@abdul_bari) |
+| Practice | [LeetCode](https://leetcode.com/) • [CSES Problem Set](https://cses.fi/problemset/) |
+| Contests | [Codeforces](https://codeforces.com/) • [CodeChef](https://www.codechef.com/) |
+| Advanced | [CP-Algorithms](https://cp-algorithms.com/) • *Competitive Programmer's Handbook* |
 
 ---
 
-## 🤝 Let's Connect
+## Connect
 
-I'm open to internships, collaborations, and good problem-solving conversations.
+I'm open to internships, collaborations, and conversations about problem solving.
 
 <div align="center">
 
-[GitHub](https://github.com/{{USERNAME}}) • [Star this repository]({{REPO_URL}}/stargazers) • [Repository manual](.github/readme/MANUAL.md)
+[GitHub](https://github.com/{{USERNAME}}) • [Star this repo]({{REPO_URL}}/stargazers) • [Repo manual](.github/readme/MANUAL.md)
 
 </div>
 
@@ -187,6 +159,6 @@ I'm open to internships, collaborations, and good problem-solving conversations.
 
 <div align="center">
 
-<sub>This README updates automatically on every push. The dashboard, tracker, milestones, and log are generated from the repository.</sub>
+<sub>README, dashboard, and logs are generated from this repository on every push.</sub>
 
 </div>

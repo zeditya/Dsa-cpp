@@ -412,15 +412,15 @@ No Python changes are needed for static content.
 Use a placeholder in the template:
 
 ```markdown
-## 📌 Current Focus
+## Progress
 
-{{CURRENT_FOCUS}}
+{{STATS_TABLE}}
 ```
 
 Then add the value to the `replacements` dictionary in `build_readme()`:
 
 ```python
-"{{CURRENT_FOCUS}}": build_current_focus(stats),
+"{{STATS_TABLE}}": build_stats_table(stats),
 ```
 
 The script exits with an error if a placeholder is left unresolved, so a broken
@@ -434,13 +434,9 @@ README is never committed.
 | `{{REPO}}` | Repository name |
 | `{{REPO_URL}}` | Full repository URL |
 | `{{LAST_UPDATED}}` | Generator timestamp |
-| `{{CURRENT_FOCUS}}` | Topic of the most recently added solution |
-| `{{GOAL_TABLE}}` | Started date, sheet, targets, and focus |
-| `{{OVERALL_PROGRESS}}` | Text progress bar to `target_problems` |
 | `{{STATS_TABLE}}` | Total, difficulty split, current and best streak |
 | `{{STRIVER_TABLE}}` | Striver A2Z step tracker |
 | `{{MILESTONES}}` | Auto-checked problem, streak, and skill milestones |
-| `{{NEXT_MILESTONE}}` | Next unachieved problem milestone |
 | `{{RECENT_TABLE}}` | Five most recent solutions |
 | `{{WEEKLY_LOG}}` | Last eight weeks of topics, solutions, and commits |
 | `{{REPO_TREE}}` | Real top-level folders and solution counts |
@@ -448,10 +444,6 @@ README is never committed.
 | `{{TOTAL_SOLUTIONS}}` | Total tracked code files |
 | `{{TARGET_PROBLEMS}}` | Overall target |
 | `{{PROGRESS_PCT}}` | Overall percentage |
-| `{{STAT_BADGES}}` | Legacy shields.io stat badges, not used by the default template |
-| `{{TOPIC_TABLE}}` | Legacy topic table, not used by the default template |
-| `{{ROADMAP}}` | Legacy phase checklist, not used by the default template |
-| `{{LEETCODE_SECTION}}` | Legacy LeetCode card, not used by the default template |
 
 ### 6.6 Change the hero banner
 
@@ -465,7 +457,7 @@ The hero is generated on every run, so change the function rather than the SVG.
 The README uses one local GIF:
 
 ```html
-<img src=".github/readme/assets/grind.gif" alt="I'm ready to slay: the DSA grind" width="620" />
+<img src=".github/readme/assets/grind.gif" alt="I'm ready to slay" width="620" />
 ```
 
 To swap it:
@@ -510,13 +502,13 @@ Problem milestones live in `PROBLEM_MILESTONES`:
 
 ```python
 PROBLEM_MILESTONES = [
-    (10, "First steps"),
-    (50, "Building momentum"),
-    (100, "Triple digits"),
-    (250, "Serious grinder"),
+    (10, ""),
+    (50, ""),
+    (100, ""),
+    (250, ""),
     (455, "A2Z sheet complete"),
-    (600, "Beyond the sheet"),
-    (800, "Elite territory"),
+    (600, ""),
+    (800, ""),
 ]
 ```
 
@@ -676,7 +668,7 @@ Function: `render_hero(stats)`
 
 - Canvas: `1200 × 340`
 - Matrix-style code rain behind the text
-- Title, tagline, and a mono command line
+- Title, subtitle, and a mono command line
 - A glowing binary tree on the right
 - Colors: cyan `#22d3ee`, teal `#2dd4bf`, violet `#a78bfa`, green `#4ade80`
 
@@ -685,8 +677,8 @@ Common edits:
 | Change | Where |
 | :--- | :--- |
 | Title | `svg_text(64, 140, "DSA in C++", 62, ...)` |
-| Tagline | The `Clean code. Clear thinking.` line |
-| Command line | The `$ while (consistent) ...` line |
+| Subtitle | The `Notes and solutions from my DSA practice.` line |
+| Command line | The `$ g++ -std=c++17 solution.cpp -o solution` line |
 | Rain density | `for column in range(18, width, 30)` |
 | Rain colors | `color = "#4ade80" if ... else "#22d3ee"` |
 | Tree nodes | The `nodes = [...]` list |
@@ -956,7 +948,8 @@ This controls the per-topic bars in the dashboard. It does not cap the count.
 "target_problems": 455
 ```
 
-This controls the overall progress bar and the A2Z completion milestone.
+This controls the overall progress bar in the dashboard and the A2Z completion
+milestone.
 
 ### 9.6 Change timezone
 
@@ -967,18 +960,7 @@ This controls the overall progress bar and the A2Z completion milestone.
 This affects “today” for streaks and the timestamps in the generated SVGs.
 Use any IANA timezone name.
 
-### 9.7 Enable the LeetCode card (legacy)
-
-```json
-"leetcode_username": "your-leetcode-username",
-"show_leetcode_card": true
-```
-
-This is off by default and the current template does not show it. If you turn it
-on, the card comes from `leetcard.jacoblin.cool`, which is a third-party host.
-That conflicts with the unbreakable images policy, so prefer the local dashboard.
-
-### 9.8 Change the Striver A2Z tracker
+### 9.7 Change the Striver A2Z tracker
 
 Edit the `striver_steps` array. Topic names must match `topics[].name` exactly.
 The tracker shows solved counts and topic coverage for each step, and

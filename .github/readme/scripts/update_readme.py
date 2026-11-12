@@ -52,13 +52,13 @@ DIFFICULTY_EMOJI = {
 }
 
 PROBLEM_MILESTONES = [
-    (10, "First steps"),
-    (50, "Building momentum"),
-    (100, "Triple digits"),
-    (250, "Serious grinder"),
+    (10, ""),
+    (50, ""),
+    (100, ""),
+    (250, ""),
     (455, "A2Z sheet complete"),
-    (600, "Beyond the sheet"),
-    (800, "Elite territory"),
+    (600, ""),
+    (800, ""),
 ]
 
 STREAK_MILESTONES = [7, 30, 50, 100, 200, 365]
@@ -119,20 +119,6 @@ def is_bot_commit(name: str, email: str) -> bool:
 def norm_token(value: str) -> str:
     """Normalise a topic/path token for matching: 'Two Pointers' -> 'twopointers'."""
     return re.sub(r"[^a-z0-9]+", "", value.lower())
-
-
-def shields_escape(value: object) -> str:
-    """Escape a value for the path portion of a shields.io badge."""
-    text = str(value)
-    text = text.replace("%", "%25")
-    text = text.replace("-", "--")
-    text = text.replace("_", "__")
-    text = text.replace(" ", "%20")
-    text = text.replace("/", "%2F")
-    text = text.replace("&", "%26")
-    text = text.replace("#", "%23")
-    text = text.replace("?", "%3F")
-    return text
 
 
 def svg_text(
@@ -448,61 +434,12 @@ def collect_solutions() -> list[dict]:
 # --------------------------------------------------------------------------- #
 # Markdown fragments
 # --------------------------------------------------------------------------- #
-def build_stat_badges(stats: dict) -> str:
-    total = stats["total"]
-    streak = stats["current_streak"]
-    covered = stats["covered"]
-    total_topics = stats["total_topics"]
-    active_days = stats["active_days"]
-
-    streak_label = f"{streak} day" + ("" if streak == 1 else "s")
-    badges = [
-        (
-            f"https://img.shields.io/badge/Solutions-{shields_escape(total)}-22D3EE"
-            "?style=for-the-badge&logo=leetcode&logoColor=white",
-            "Solutions",
-        ),
-        (
-            f"https://img.shields.io/badge/Streak-{shields_escape(streak_label)}-FB923C"
-            "?style=for-the-badge&logo=git&logoColor=white",
-            "Current streak",
-        ),
-        (
-            f"https://img.shields.io/badge/Topics-{shields_escape(str(covered) + '/' + str(total_topics))}-A78BFA"
-            "?style=for-the-badge&logo=bookstack&logoColor=white",
-            "Topics covered",
-        ),
-        (
-            f"https://img.shields.io/badge/Active%20Days-{shields_escape(active_days)}-4ADE80"
-            "?style=for-the-badge&logo=googlecalendar&logoColor=white",
-            "Active days",
-        ),
-    ]
-    return "\n".join(f'  <img src="{src}" alt="{alt}" />' for src, alt in badges)
-
-
-def build_topic_table(stats: dict) -> str:
-    goal = int(CONFIG.get("topic_target", 25))
-    rows: list[str] = []
-    for topic in CONFIG["topics"]:
-        name = topic["name"]
-        icon = topic.get("icon", "•")
-        count = stats["topics"].get(name, 0)
-        percentage = 0 if count == 0 else min(100, round(count / goal * 100))
-        filled = round(percentage / 100 * 16)
-        if count > 0:
-            filled = max(1, filled)
-        bar = "█" * filled + "░" * (16 - filled)
-        rows.append(f"| {icon} **{name}** | `{count:>3} / {goal}` | `{bar}` **{percentage}%** |")
-    return "\n".join(rows)
-
-
 def build_recent_table(stats: dict) -> str:
     solutions = stats["solutions"]
     if not solutions:
         return (
-            "> **Day one.** The first solution is the hardest. "
-            "Add a file under `DSA/` and this table will update on the next push."
+            "No solutions yet. Add a file under `DSA/` and it will appear here "
+            "after the next push."
         )
 
     rows = [
@@ -528,82 +465,6 @@ def build_recent_table(stats: dict) -> str:
     if len(solutions) > 5:
         table += f"\n\n<sub>Showing the 5 most recent of **{len(solutions)}** tracked files.</sub>"
     return table
-
-
-def build_roadmap(stats: dict) -> str:
-    lines: list[str] = []
-    for phase in CONFIG.get("phases", []):
-        names = phase["topics"]
-        started = sum(1 for name in names if stats["topics"].get(name, 0) > 0)
-        lines.append(f"### {phase['name']}")
-        lines.append(f"`{started} / {len(names)} topics started`")
-        lines.append("")
-        for name in names:
-            count = stats["topics"].get(name, 0)
-            icon = TOPIC_ICONS.get(name, "•")
-            if count:
-                plural = "s" if count != 1 else ""
-                lines.append(f"- [x] {icon} **{name}**: {count} solution{plural}")
-            else:
-                lines.append(f"- [ ] {icon} **{name}**")
-        lines.append("")
-    return "\n".join(lines).strip()
-
-
-def build_leetcode_section() -> str:
-    if not CONFIG.get("show_leetcode_card"):
-        return ""
-    username = CONFIG.get("leetcode_username", "").strip()
-    if not username:
-        return ""
-    return (
-        "## 🧪 LeetCode Profile\n\n"
-        '<div align="center">\n'
-        f'  <img src="https://leetcard.jacoblin.cool/{quote(username)}'
-        '?theme=dark&font=JetBrains%20Mono&ext=heatmap" alt="LeetCode stats" />\n'
-        "</div>"
-    )
-
-
-def build_current_focus(stats: dict) -> str:
-    if stats["solutions"]:
-        return str(stats["solutions"][0]["topic"])
-    return "DSA fundamentals"
-
-
-def build_next_milestone(stats: dict) -> str:
-    total = stats["total"]
-    for threshold, label in PROBLEM_MILESTONES:
-        if total < threshold:
-            return f"**{threshold} problems** ({label})"
-    return "**800+ problems** (elite territory)"
-
-
-def build_goal_table(stats: dict) -> str:
-    sheet_name = CONFIG.get("sheet_name", "Striver's A2Z DSA Sheet")
-    sheet_url = CONFIG.get("sheet_url", "")
-    sheet = f"[{sheet_name}]({sheet_url})" if sheet_url else sheet_name
-    started = stats["first_commit"].strftime("%d %b %Y")
-    rows = [
-        "| | |",
-        "| :--- | :--- |",
-        f"| 🗓️ **Started** | `{started}` |",
-        "| 🧠 **Language** | C++17 |",
-        f"| 📚 **Main Sheet** | {sheet} |",
-        f"| 🔥 **Daily Target** | {CONFIG.get('daily_target', '1-2 problems')} |",
-        f"| 🏁 **Long-Term Target** | {CONFIG.get('long_term_target', '600-800+ problems')} |",
-        f"| 🎯 **Current Focus** | {build_current_focus(stats)} |",
-    ]
-    return "\n".join(rows)
-
-
-def build_overall_progress(stats: dict) -> str:
-    target = int(CONFIG.get("target_problems", 455))
-    total = stats["total"]
-    percentage = 0 if target <= 0 else min(100, round(total / target * 100))
-    filled = 0 if percentage == 0 else max(1, round(percentage / 100 * 20))
-    bar = "█" * filled + "░" * (20 - filled)
-    return f"Total solved:  {total} / {target}\n[{bar}]  {percentage}%"
 
 
 def build_stats_table(stats: dict) -> str:
@@ -652,9 +513,10 @@ def build_milestones(stats: dict, contest_count: int = 0) -> str:
     lines = ["### Problems solved"]
     for threshold, label in PROBLEM_MILESTONES:
         mark = "x" if stats["total"] >= threshold else " "
-        lines.append(f"- [{mark}] {threshold} • {label}")
+        suffix = f" • {label}" if label else ""
+        lines.append(f"- [{mark}] {threshold} problems{suffix}")
 
-    lines.extend(["", "### Consistency"])
+    lines.extend(["", "### Streaks"])
     for threshold in STREAK_MILESTONES:
         mark = "x" if stats["longest_streak"] >= threshold else " "
         lines.append(f"- [{mark}] {threshold}-day streak")
@@ -743,7 +605,7 @@ def build_contest_section(stats: dict) -> str:
     if not profiles and not contests:
         return ""
 
-    parts = ["## 🏆 Contest Log", ""]
+    parts = ["## Contest log", ""]
     if profiles:
         parts.extend(
             [
@@ -781,6 +643,8 @@ def build_contest_section(stats: dict) -> str:
         "<sub>Contest data is read from "
         "<code>.github/readme/scripts/contests.json</code>.</sub>"
     )
+    parts.append("")
+    parts.append("---")
     return "\n".join(parts)
 
 
@@ -829,12 +693,12 @@ def render_dashboard(stats: dict) -> str:
         '<circle cx="120" cy="700" r="180" fill="#8b5cf6" opacity="0.08" filter="url(#blur)" />',
         '<rect x="60" y="42" width="168" height="28" rx="14" fill="#0b2838" stroke="#155e75" />',
         '<circle cx="78" cy="56" r="4.5" fill="#22d3ee" />',
-        svg_text(92, 60, "LIVE DSA DASHBOARD", 10.5, "#67e8f9", 700, letter_spacing=1.4),
-        svg_text(60, 118, "DSA Progress, Visualized.", 36, "#f8fafc", 700),
+        svg_text(92, 60, "DSA DASHBOARD", 10.5, "#67e8f9", 700, letter_spacing=1.4),
+        svg_text(60, 118, "DSA progress", 36, "#f8fafc", 700),
         svg_text(
             60,
             144,
-            "A live view of consistent practice and problem solving.",
+            "Generated from this repository on every push.",
             12,
             "#94a3b8",
         ),
@@ -996,8 +860,8 @@ def render_activity(stats: dict) -> str:
         '<circle cx="1070" cy="70" r="150" fill="#22c55e" opacity="0.08" filter="url(#aglow)" />',
         '<rect x="60" y="36" width="180" height="26" rx="13" fill="#0b2a1a" stroke="#166534" />',
         '<circle cx="78" cy="49" r="4.5" fill="#4ade80" />',
-        svg_text(92, 53, "CONSISTENCY MAP", 10, "#86efac", 700, letter_spacing=1.3),
-        svg_text(60, 106, "A year of consistent practice.", 26, "#f8fafc", 700),
+        svg_text(92, 53, "ACTIVITY", 10, "#86efac", 700, letter_spacing=1.3),
+        svg_text(60, 106, "Commit activity", 26, "#f8fafc", 700),
         svg_text(
             60,
             128,
@@ -1166,7 +1030,7 @@ def render_hero(stats: dict) -> str:
             svg_text(
                 66,
                 180,
-                "Consistency over intensity. Every day. Until graduation and beyond.",
+                "Notes and solutions from my DSA practice.",
                 15.5,
                 "#cbd5e1",
                 500,
@@ -1174,7 +1038,7 @@ def render_hero(stats: dict) -> str:
             svg_text(
                 66,
                 228,
-                "$ while (consistent) { solve(); learn(); repeat(); }",
+                "$ g++ -std=c++17 solution.cpp -o solution",
                 13.5,
                 "#67e8f9",
                 500,
@@ -1222,7 +1086,7 @@ def render_hero(stats: dict) -> str:
         svg_text(
             980,
             278,
-            "structure before speed",
+            "binary tree · graph traversal",
             10.5,
             "#475569",
             600,
@@ -1295,16 +1159,9 @@ def build_readme(stats: dict) -> str:
         "{{REPO}}": CONFIG["repo"],
         "{{REPO_URL}}": f"https://github.com/{CONFIG['username']}/{CONFIG['repo']}",
         "{{LAST_UPDATED}}": stats["last_updated"].strftime("%d %b %Y, %I:%M %p %Z"),
-        "{{CURRENT_FOCUS}}": build_current_focus(stats),
-        "{{STAT_BADGES}}": build_stat_badges(stats),
-        "{{TOPIC_TARGET}}": str(CONFIG.get("topic_target", 25)),
-        "{{TOPIC_TABLE}}": build_topic_table(stats),
-        "{{GOAL_TABLE}}": build_goal_table(stats),
-        "{{OVERALL_PROGRESS}}": build_overall_progress(stats),
         "{{STATS_TABLE}}": build_stats_table(stats),
         "{{STRIVER_TABLE}}": build_striver_table(stats),
         "{{MILESTONES}}": build_milestones(stats, contest_count),
-        "{{NEXT_MILESTONE}}": build_next_milestone(stats),
         "{{TOTAL_SOLUTIONS}}": str(stats["total"]),
         "{{TARGET_PROBLEMS}}": str(target),
         "{{PROGRESS_PCT}}": str(percentage),
@@ -1312,8 +1169,6 @@ def build_readme(stats: dict) -> str:
         "{{WEEKLY_LOG}}": build_weekly_log(stats),
         "{{REPO_TREE}}": build_repo_tree(stats),
         "{{CONTEST_SECTION}}": build_contest_section(stats),
-        "{{ROADMAP}}": build_roadmap(stats),
-        "{{LEETCODE_SECTION}}": build_leetcode_section(),
     }
 
     readme = template
@@ -1324,6 +1179,7 @@ def build_readme(stats: dict) -> str:
     if unresolved:
         raise SystemExit(f"Unresolved template placeholders: {', '.join(unresolved)}")
 
+    readme = re.sub(r"\n{3,}", "\n\n", readme)
     return readme.rstrip() + "\n"
 
 

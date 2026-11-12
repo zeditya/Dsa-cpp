@@ -228,8 +228,8 @@
 <circle cx="82" cy="59" r="4.5" fill="#22d3ee" />
 <text x="96" y="63" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10.5" font-weight="700" fill="#67e8f9" text-anchor="start" letter-spacing="1.4">DSA · C++ · PROBLEM SOLVING</text>
 <text x="64" y="140" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="62" font-weight="800" fill="url(#heroTitle)" text-anchor="start">DSA in C++</text>
-<text x="66" y="180" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="15.5" font-weight="500" fill="#cbd5e1" text-anchor="start">Consistency over intensity. Every day. Until graduation and beyond.</text>
-<text x="66" y="228" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="13.5" font-weight="500" fill="#67e8f9" text-anchor="start">$ while (consistent) { solve(); learn(); repeat(); }</text>
+<text x="66" y="180" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="15.5" font-weight="500" fill="#cbd5e1" text-anchor="start">Notes and solutions from my DSA practice.</text>
+<text x="66" y="228" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="13.5" font-weight="500" fill="#67e8f9" text-anchor="start">$ g++ -std=c++17 solution.cpp -o solution</text>
 <text x="66" y="300" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="11" font-weight="500" fill="#64748b" text-anchor="start">github.com/zeditya/Dsa-cpp</text>
 <text x="1136" y="300" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" fill="#475569" text-anchor="end" letter-spacing="1.4">AUTO-UPDATED DAILY</text>
 <line x1="980" y1="96" x2="900" y2="164" stroke="#22d3ee" stroke-width="1.4" opacity="0.28" />
@@ -259,5 +259,5 @@
 <circle cx="1110" cy="232" r="15" fill="#4ade80" opacity="0.10" />
 <circle cx="1110" cy="232" r="8" fill="#0b1a2a" stroke="#4ade80" stroke-width="2" />
 <circle cx="1110" cy="232" r="2.4" fill="#4ade80" />
-<text x="980" y="278" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10.5" font-weight="600" fill="#475569" text-anchor="middle" letter-spacing="0.8">structure before speed</text>
+<text x="980" y="278" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10.5" font-weight="600" fill="#475569" text-anchor="middle" letter-spacing="0.8">binary tree · graph traversal</text>
 </svg>

@@ -1,16 +1,9 @@
 {
   "username": "zeditya",
   "repo": "Dsa-cpp",
-  "display_name": "Aditya",
   "target_problems": 455,
   "topic_target": 25,
   "timezone": "Asia/Kolkata",
-  "sheet_name": "Striver's A2Z DSA Sheet",
-  "sheet_url": "https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2/",
-  "daily_target": "1-2 problems",
-  "long_term_target": "600-800+ problems",
-  "leetcode_username": "",
-  "show_leetcode_card": false,
   "exclude_dirs": [
     ".git",
     ".github",
@@ -202,46 +195,5 @@
     { "name": "Dynamic Programming", "topics": ["Dynamic Programming"] },
     { "name": "Tries", "topics": ["Tries"] },
     { "name": "Strings (Advanced)", "topics": ["Strings"] }
-  ],
-  "phases": [
-    {
-      "name": "Phase 1 · Foundations",
-      "topics": [
-        "C++ & STL",
-        "Arrays",
-        "Strings",
-        "Sorting",
-        "Binary Search",
-        "Two Pointers",
-        "Sliding Window",
-        "Math",
-        "Bit Manipulation"
-      ]
-    },
-    {
-      "name": "Phase 2 · Core Data Structures",
-      "topics": [
-        "Linked List",
-        "Stack & Queue",
-        "Hashing",
-        "Trees & BST",
-        "Heaps",
-        "Tries"
-      ]
-    },
-    {
-      "name": "Phase 3 · Algorithms",
-      "topics": [
-        "Recursion",
-        "Backtracking",
-        "Greedy",
-        "Graphs",
-        "Dynamic Programming"
-      ]
-    },
-    {
-      "name": "Phase 4 · Advanced",
-      "topics": ["Segment Trees", "Misc"]
-    }
   ]
 }
