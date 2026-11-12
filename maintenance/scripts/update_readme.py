@@ -44,12 +44,24 @@ ASSETS_DIR = ROOT / "maintenance" / "assets"
 SANS = "Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif"
 MONO = "'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace"
 
-DIFFICULTY_COLORS = {
-    "Easy": "00B8A3",
-    "Medium": "FFB020",
-    "Hard": "EF4444",
-    "Unknown": "64748B",
+DIFFICULTY_EMOJI = {
+    "Easy": "🟢",
+    "Medium": "🟡",
+    "Hard": "🔴",
+    "Unknown": "⚪",
 }
+
+PROBLEM_MILESTONES = [
+    (10, "First steps"),
+    (50, "Building momentum"),
+    (100, "Triple digits"),
+    (250, "Serious grinder"),
+    (455, "A2Z sheet complete"),
+    (600, "Beyond the sheet"),
+    (800, "Elite territory"),
+]
+
+STREAK_MILESTONES = [7, 30, 50, 100, 200, 365]
 
 
 # --------------------------------------------------------------------------- #
@@ -87,6 +99,21 @@ def git(*args: str) -> str:
         return result.stdout if result.returncode == 0 else ""
     except Exception:
         return ""
+
+
+BOT_NAMES = {"github-actions[bot]"}
+BOT_EMAILS = {"41898282+github-actions[bot]@users.noreply.github.com"}
+
+
+def is_bot_commit(name: str, email: str) -> bool:
+    """Return True for automation commits so they do not fake a streak."""
+    lowered = email.lower()
+    return (
+        name in BOT_NAMES
+        or email in BOT_EMAILS
+        or "github-actions" in lowered
+        or lowered.endswith("[bot]@users.noreply.github.com")
+    )
 
 
 def norm_token(value: str) -> str:
@@ -260,35 +287,58 @@ def classify_topic(rel_path: str, meta_topic: str | None) -> str:
 # --------------------------------------------------------------------------- #
 # Git history
 # --------------------------------------------------------------------------- #
-def collect_git_data() -> tuple[set[date], int, dict[str, datetime]]:
+def collect_git_data() -> tuple[set[date], Counter[date], int, dict[str, datetime]]:
     commit_days: set[date] = set()
+    commit_counts: Counter[date] = Counter()
     commit_count = 0
 
-    raw_dates = git("log", "--all", "--format=%aI")
+    raw_dates = git("log", "HEAD", "--format=%an|%ae|%aI")
     for line in raw_dates.splitlines():
         line = line.strip()
         if not line:
             continue
+        parts = line.split("|")
+        if len(parts) != 3:
+            continue
+        name, email, iso = parts
+        if is_bot_commit(name, email):
+            continue
         try:
-            moment = datetime.fromisoformat(line)
+            moment = datetime.fromisoformat(iso)
         except ValueError:
             continue
         if moment.tzinfo is None:
             moment = moment.replace(tzinfo=timezone.utc)
-        commit_days.add(moment.astimezone(TZ).date())
+        day = moment.astimezone(TZ).date()
+        commit_days.add(day)
+        commit_counts[day] += 1
         commit_count += 1
 
     added: dict[str, datetime] = {}
-    raw_added = git("log", "--all", "--diff-filter=A", "--name-only", "--format=COMMIT|%aI")
+    raw_added = git(
+        "log",
+        "HEAD",
+        "--diff-filter=A",
+        "--name-only",
+        "--format=COMMIT|%an|%ae|%aI",
+    )
     current: datetime | None = None
     for line in raw_added.splitlines():
         line = line.strip()
         if not line:
             continue
         if line.startswith("COMMIT|"):
+            parts = line.split("|")
+            if len(parts) != 4:
+                current = None
+                continue
+            _, name, email, iso = parts
+            if is_bot_commit(name, email):
+                current = None
+                continue
             try:
-                current = datetime.fromisoformat(line.split("|", 1)[1])
-            except (ValueError, IndexError):
+                current = datetime.fromisoformat(iso)
+            except ValueError:
                 current = None
         elif current is not None:
             # Newest commit is read first, so setdefault keeps the latest add.
@@ -296,9 +346,11 @@ def collect_git_data() -> tuple[set[date], int, dict[str, datetime]]:
 
     if not commit_days:
         for moment in added.values():
-            commit_days.add(moment.astimezone(TZ).date())
+            day = moment.astimezone(TZ).date()
+            commit_days.add(day)
+            commit_counts[day] += 1
 
-    return commit_days, commit_count, added
+    return commit_days, commit_counts, commit_count, added
 
 
 def calculate_streaks(active_days: set[date], today: date) -> tuple[int, int]:
@@ -327,7 +379,7 @@ def calculate_streaks(active_days: set[date], today: date) -> tuple[int, int]:
 # Aggregate stats
 # --------------------------------------------------------------------------- #
 def collect_solutions() -> list[dict]:
-    commit_days, commit_count, added_map = collect_git_data()
+    commit_days, commit_counts, commit_count, added_map = collect_git_data()
     solutions: list[dict] = []
 
     for path in iter_code_files():
@@ -382,10 +434,12 @@ def collect_solutions() -> list[dict]:
         "hard": difficulty_counts.get("Hard", 0),
         "unknown": difficulty_counts.get("Unknown", 0),
         "commit_days": commit_days,
+        "commit_counts": commit_counts,
         "commit_count": commit_count,
         "active_days": len(commit_days),
         "current_streak": current_streak,
         "longest_streak": longest_streak,
+        "first_commit": min(commit_days) if commit_days else today,
         "today": today,
         "last_updated": datetime.now(TZ),
     }
@@ -447,8 +501,8 @@ def build_recent_table(stats: dict) -> str:
     solutions = stats["solutions"]
     if not solutions:
         return (
-            "> The first solutions are on the way. "
-            "This section updates automatically as new problems are completed."
+            "> **Day one.** The first solution is the hardest. "
+            "Add a file under `DSA/` and this table will update on the next push."
         )
 
     rows = [
@@ -463,14 +517,10 @@ def build_recent_table(stats: dict) -> str:
             problem_cell = f"**{title}**"
         icon = TOPIC_ICONS.get(item["topic"], "•")
         difficulty = item["difficulty"]
-        color = DIFFICULTY_COLORS.get(difficulty, DIFFICULTY_COLORS["Unknown"])
-        difficulty_badge = (
-            f"![{difficulty}](https://img.shields.io/badge/"
-            f"{shields_escape(difficulty)}-{color}?style=flat-square)"
-        )
+        difficulty_label = f"{DIFFICULTY_EMOJI.get(difficulty, '⚪')} {difficulty}"
         code_link = quote(item["path"], safe="/")
         rows.append(
-            f"| {problem_cell} | {icon} {item['topic']} | {difficulty_badge} | "
+            f"| {problem_cell} | {icon} {item['topic']} | {difficulty_label} | "
             f"{item['added_at'].strftime('%d %b %Y')} | [View]({code_link}) |"
         )
 
@@ -522,13 +572,221 @@ def build_current_focus(stats: dict) -> str:
 
 
 def build_next_milestone(stats: dict) -> str:
-    target = int(CONFIG.get("target_problems", 500))
     total = stats["total"]
-    if total >= target:
-        return f"**{target} reached** 🎉"
-    step = 50
-    next_milestone = min(target, ((total // step) + 1) * step)
-    return f"**{next_milestone} solutions**"
+    for threshold, label in PROBLEM_MILESTONES:
+        if total < threshold:
+            return f"**{threshold} problems** ({label})"
+    return "**800+ problems** (elite territory)"
+
+
+def build_goal_table(stats: dict) -> str:
+    sheet_name = CONFIG.get("sheet_name", "Striver's A2Z DSA Sheet")
+    sheet_url = CONFIG.get("sheet_url", "")
+    sheet = f"[{sheet_name}]({sheet_url})" if sheet_url else sheet_name
+    started = stats["first_commit"].strftime("%d %b %Y")
+    rows = [
+        "| | |",
+        "| :--- | :--- |",
+        f"| 🗓️ **Started** | `{started}` |",
+        "| 🧠 **Language** | C++17 |",
+        f"| 📚 **Main Sheet** | {sheet} |",
+        f"| 🔥 **Daily Target** | {CONFIG.get('daily_target', '1-2 problems')} |",
+        f"| 🏁 **Long-Term Target** | {CONFIG.get('long_term_target', '600-800+ problems')} |",
+        f"| 🎯 **Current Focus** | {build_current_focus(stats)} |",
+    ]
+    return "\n".join(rows)
+
+
+def build_overall_progress(stats: dict) -> str:
+    target = int(CONFIG.get("target_problems", 455))
+    total = stats["total"]
+    percentage = 0 if target <= 0 else min(100, round(total / target * 100))
+    filled = 0 if percentage == 0 else max(1, round(percentage / 100 * 20))
+    bar = "█" * filled + "░" * (20 - filled)
+    return f"Total solved:  {total} / {target}\n[{bar}]  {percentage}%"
+
+
+def build_stats_table(stats: dict) -> str:
+    def days(value: int) -> str:
+        return f"{value} day" + ("" if value == 1 else "s")
+
+    rows = [
+        "| 🧩 Total Solved | 🟢 Easy | 🟡 Medium | 🔴 Hard | 🔥 Current Streak | 🏆 Best Streak |",
+        "|:---:|:---:|:---:|:---:|:---:|:---:|",
+        f"| **{stats['total']}** | {stats['easy']} | {stats['medium']} | "
+        f"{stats['hard']} | {days(stats['current_streak'])} | {days(stats['longest_streak'])} |",
+    ]
+    return "\n".join(rows)
+
+
+def build_striver_table(stats: dict) -> str:
+    steps = CONFIG.get("striver_steps", [])
+    rows = [
+        "| # | Step | Status | Solved | Coverage |",
+        "|:-:|:---|:---:|:---:|:---|",
+    ]
+    for index, step in enumerate(steps, start=1):
+        topics = step.get("topics", [])
+        counts = [stats["topics"].get(name, 0) for name in topics]
+        solved = sum(counts)
+        covered = sum(1 for count in counts if count > 0)
+        total_topics = len(topics)
+        percentage = 0 if total_topics == 0 else round(covered / total_topics * 100)
+        filled = round(percentage / 100 * 16)
+        if covered > 0:
+            filled = max(1, filled)
+        bar = "█" * filled + "░" * (16 - filled)
+        if total_topics and covered == total_topics:
+            status = "🟩"
+        elif covered > 0:
+            status = "🟨"
+        else:
+            status = "⬜"
+        rows.append(
+            f"| {index} | {step['name']} | {status} | {solved} | `{bar}` {percentage}% |"
+        )
+    return "\n".join(rows)
+
+
+def build_milestones(stats: dict, contest_count: int = 0) -> str:
+    lines = ["### Problems solved"]
+    for threshold, label in PROBLEM_MILESTONES:
+        mark = "x" if stats["total"] >= threshold else " "
+        lines.append(f"- [{mark}] {threshold} • {label}")
+
+    lines.extend(["", "### Consistency"])
+    for threshold in STREAK_MILESTONES:
+        mark = "x" if stats["longest_streak"] >= threshold else " "
+        lines.append(f"- [{mark}] {threshold}-day streak")
+
+    lines.extend(["", "### Skills"])
+    topics = stats["topics"]
+    skills = [
+        ("C++ & STL started", topics.get("C++ & STL", 0) > 0),
+        ("10 Easy problems solved", stats["easy"] >= 10),
+        ("25 Medium problems solved", stats["medium"] >= 25),
+        ("Graphs started", topics.get("Graphs", 0) > 0),
+        ("Dynamic Programming started", topics.get("Dynamic Programming", 0) > 0),
+        (f"All {stats['total_topics']} topics started", stats["covered"] >= stats["total_topics"]),
+        ("First contest logged", contest_count > 0),
+    ]
+    for label, done in skills:
+        mark = "x" if done else " "
+        lines.append(f"- [{mark}] {label}")
+    return "\n".join(lines)
+
+
+def build_weekly_log(stats: dict) -> str:
+    today = stats["today"]
+    monday = today - timedelta(days=today.weekday())
+    rows = [
+        "| Week | Topics | Solved | Commits |",
+        "|:---|:---|:---:|:---:|",
+    ]
+    for offset in range(8):
+        start = monday - timedelta(days=7 * offset)
+        end = min(start + timedelta(days=6), today)
+        commits = sum(
+            count for day, count in stats["commit_counts"].items() if start <= day <= end
+        )
+        week_solutions = [
+            item for item in stats["solutions"] if start <= item["added_at"].date() <= end
+        ]
+        topics = sorted({item["topic"] for item in week_solutions})
+        topic_text = ", ".join(topics) if topics else "-"
+        label = f"{start.strftime('%d %b')} - {end.strftime('%d %b')}"
+        if offset == 0:
+            label += " (current)"
+        rows.append(f"| {label} | {topic_text} | {len(week_solutions)} | {commits} |")
+    return "\n".join(rows)
+
+
+def build_repo_tree(stats: dict) -> str:
+    excluded = {".git", ".github", "maintenance", "output", "node_modules", "build", "bin"}
+    entries: list[tuple[str, str]] = []
+    for entry in sorted(ROOT.iterdir()):
+        if not entry.is_dir() or entry.name in excluded:
+            continue
+        count = sum(
+            1 for item in stats["solutions"] if item["path"].startswith(entry.name + "/")
+        )
+        entries.append(
+            (entry.name + "/", f"{count} solution" + ("" if count == 1 else "s"))
+        )
+    entries.extend(
+        [
+            ("maintenance/", "repo tooling"),
+            ("README.md", "auto-generated profile"),
+        ]
+    )
+    lines = ["Dsa-cpp/"]
+    for index, (label, note) in enumerate(entries):
+        connector = "└──" if index == len(entries) - 1 else "├──"
+        lines.append(f"{connector} {label}".ljust(36) + note)
+    return "\n".join(lines)
+
+
+def load_contests() -> dict:
+    path = ROOT / "maintenance" / "scripts" / "contests.json"
+    if not path.exists():
+        return {}
+    try:
+        data = load_json(path)
+    except (OSError, json.JSONDecodeError):
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def md_cell(value: object) -> str:
+    return str(value).replace("|", "\\|")
+
+
+def build_contest_section(stats: dict) -> str:
+    data = load_contests()
+    profiles = data.get("profiles", {})
+    contests = data.get("contests", [])
+    if not profiles and not contests:
+        return ""
+
+    parts = ["## 🏆 Contest Log", ""]
+    if profiles:
+        parts.extend(
+            [
+                "| Platform | Handle | Rating |",
+                "|:---|:---|:---:|",
+            ]
+        )
+        for platform, info in profiles.items():
+            if not isinstance(info, dict):
+                continue
+            handle = md_cell(info.get("handle", ""))
+            rating = md_cell(info.get("rating", "n/a"))
+            url = info.get("url", "")
+            handle_cell = f"[{handle}]({url})" if url else handle
+            parts.append(f"| {md_cell(platform)} | {handle_cell} | {rating} |")
+        parts.append("")
+
+    if contests:
+        parts.extend(
+            [
+                "| Date | Platform | Contest | Solved | Rank | Rating | Takeaway |",
+                "|:---|:---|:---|:---:|:---:|:---:|:---|",
+            ]
+        )
+        for item in contests:
+            parts.append(
+                f"| {md_cell(item.get('date', '-'))} | {md_cell(item.get('platform', '-'))} | "
+                f"{md_cell(item.get('contest', '-'))} | {md_cell(item.get('solved', '-'))} | "
+                f"{md_cell(item.get('rank', '-'))} | {md_cell(item.get('rating', '-'))} | "
+                f"{md_cell(item.get('takeaway', '-'))} |"
+            )
+        parts.append("")
+
+    parts.append(
+        "<sub>Contest data is read from "
+        "<code>maintenance/scripts/contests.json</code>.</sub>"
+    )
+    return "\n".join(parts)
 
 
 # --------------------------------------------------------------------------- #
@@ -910,7 +1168,14 @@ def render_hero(stats: dict) -> str:
                 letter_spacing=1.4,
             ),
             svg_text(64, 140, "DSA in C++", 62, "url(#heroTitle)", 800),
-            svg_text(66, 180, "Clean code. Clear thinking. Consistent practice.", 17, "#cbd5e1", 500),
+            svg_text(
+                66,
+                180,
+                "Consistency over intensity. Every day. Until graduation and beyond.",
+                15.5,
+                "#cbd5e1",
+                500,
+            ),
             svg_text(
                 66,
                 228,
@@ -1024,8 +1289,11 @@ def render_divider() -> str:
 # --------------------------------------------------------------------------- #
 def build_readme(stats: dict) -> str:
     template = TEMPLATE_PATH.read_text(encoding="utf-8")
-    target = int(CONFIG.get("target_problems", 500))
+    target = int(CONFIG.get("target_problems", 455))
     percentage = 0 if target <= 0 else min(100, round(stats["total"] / target * 100))
+    contest_data = load_contests()
+    contests = contest_data.get("contests", [])
+    contest_count = len(contests) if isinstance(contests, list) else 0
 
     replacements = {
         "{{USERNAME}}": CONFIG["username"],
@@ -1036,11 +1304,19 @@ def build_readme(stats: dict) -> str:
         "{{STAT_BADGES}}": build_stat_badges(stats),
         "{{TOPIC_TARGET}}": str(CONFIG.get("topic_target", 25)),
         "{{TOPIC_TABLE}}": build_topic_table(stats),
+        "{{GOAL_TABLE}}": build_goal_table(stats),
+        "{{OVERALL_PROGRESS}}": build_overall_progress(stats),
+        "{{STATS_TABLE}}": build_stats_table(stats),
+        "{{STRIVER_TABLE}}": build_striver_table(stats),
+        "{{MILESTONES}}": build_milestones(stats, contest_count),
         "{{NEXT_MILESTONE}}": build_next_milestone(stats),
         "{{TOTAL_SOLUTIONS}}": str(stats["total"]),
         "{{TARGET_PROBLEMS}}": str(target),
         "{{PROGRESS_PCT}}": str(percentage),
         "{{RECENT_TABLE}}": build_recent_table(stats),
+        "{{WEEKLY_LOG}}": build_weekly_log(stats),
+        "{{REPO_TREE}}": build_repo_tree(stats),
+        "{{CONTEST_SECTION}}": build_contest_section(stats),
         "{{ROADMAP}}": build_roadmap(stats),
         "{{LEETCODE_SECTION}}": build_leetcode_section(),
     }

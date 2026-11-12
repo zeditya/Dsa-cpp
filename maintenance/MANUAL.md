@@ -14,7 +14,7 @@
 4. [Daily workflow](#4-daily-workflow)
 5. [How the automation works](#5-how-the-automation-works)
 6. [Changing the README](#6-changing-the-readme)
-7. [Changing the dashboard and heatmap](#7-changing-the-dashboard-and-heatmap)
+7. [Changing the visual assets](#7-changing-the-visual-assets)
 8. [Adding and organizing solutions](#8-adding-and-organizing-solutions)
 9. [Adding or changing topics](#9-adding-or-changing-topics)
 10. [Running the generator locally](#10-running-the-generator-locally)
@@ -39,6 +39,12 @@ This repo is a **living DSA + C++ practice journal**:
   - active days
   - recent solutions
   - a 365-day commit heatmap
+  - a Striver A2Z step tracker based on topic coverage
+  - problem, streak, and skill milestones
+  - an eight-week activity log from git history
+  - a live repo tree
+  - an optional contest log from `maintenance/scripts/contests.json`
+- Automation commits are excluded from streaks, heatmaps, and the weekly log, so the numbers reflect your work and not the bot.
 - The script regenerates:
   - `README.md`
   - `maintenance/assets/hero.svg`
@@ -68,9 +74,14 @@ Dsa-cpp/
 │   │   ├── hero.svg                 ← AUTO-GENERATED header banner
 │   │   ├── dashboard.svg            ← AUTO-GENERATED dashboard
 │   │   ├── activity.svg             ← AUTO-GENERATED heatmap
-│   │   └── divider.svg              ← AUTO-GENERATED Pac-Man divider
+│   │   ├── divider.svg              ← AUTO-GENERATED Pac-Man divider
+│   │   ├── grind.gif                ← the one pop culture GIF in the README
+│   │   └── alternates/              ← other GIFs you saved, not used by README
+│   ├── reference/
+│   │   └── claude-readme.md         ← original draft kept for reference
 │   ├── scripts/
-│   │   ├── config.json              ← targets, topics, phases, timezone
+│   │   ├── config.json              ← targets, topics, steps, timezone
+│   │   ├── contests.example.json    ← copy to contests.json to enable the log
 │   │   ├── readme_template.md       ← edit this to change the README
 │   │   └── update_readme.py         ← generator (no external dependencies)
 │   └── templates/
@@ -315,6 +326,39 @@ https://raw.githubusercontent.com/zeditya/Dsa-cpp/output/github-contribution-gri
 > The first snake appears after the workflow finishes. If the image is broken
 > immediately after setup, run **Actions → Generate Snake → Run workflow** once.
 
+### 5.3 What the generator computes
+
+`maintenance/scripts/update_readme.py` builds every dynamic part of the README:
+
+| Section | Source |
+| :--- | :--- |
+| Hero banner | `maintenance/assets/hero.svg` |
+| Goal table | First commit date and `config.json` |
+| Overall progress | Solution count and `target_problems` |
+| Stats at a glance | Solution files and difficulty metadata |
+| Dashboard | Topic counts, streaks, active days |
+| Striver A2Z tracker | `striver_steps` in `config.json` plus topic counts |
+| Milestones | Problem count, best streak, topic counts, contest data |
+| Recent work | Newest solution files and metadata |
+| Weekly log | Git history, last eight weeks |
+| Heatmap | Git history, last 365 days |
+| Repo tree | Real top-level folders and solution counts |
+| Contest log | Optional `maintenance/scripts/contests.json` |
+
+### 5.4 Why bot commits are excluded
+
+The daily README rebuild commits to `main` with `[skip ci]`. The snake workflow
+also writes to the `output` branch. If those commits were counted, the streak
+and heatmap would always look active even when you did not solve anything.
+
+The generator now:
+
+- reads history from `HEAD` only, so the `output` branch is ignored
+- skips commits authored by `github-actions[bot]`
+- skips the bot email `41898282+github-actions[bot]@users.noreply.github.com`
+
+The result is a streak and heatmap that reflect your work.
+
 ---
 
 ## 6. Changing the README
@@ -328,18 +372,10 @@ lost the next time the workflow runs.
 
 ### 6.2 Change text, headings, quotes, or links
 
-Edit `maintenance/scripts/readme_template.md` directly. Examples:
+Edit `maintenance/scripts/readme_template.md` directly. The template is the
+source of truth for every static word in the README.
 
-- intro paragraph
-- “Hey, I'm Aditya” section
-- mission table
-- “The Long Game” section
-- footer quote
-- social links
-- badges
-- section order
-
-Then either:
+Then either run the generator and commit:
 
 ```bash
 python3 maintenance/scripts/update_readme.py
@@ -348,7 +384,7 @@ git commit -m "docs: update README copy"
 git push
 ```
 
-or just push the template change and let the Action regenerate it.
+or push the template change and let the Action regenerate it.
 
 ### 6.3 Add a new static section
 
@@ -372,20 +408,14 @@ Use a placeholder in the template:
 {{CURRENT_FOCUS}}
 ```
 
-Then add the value to the `replacements` dictionary in
-`maintenance/scripts/update_readme.py` inside `build_readme()`:
+Then add the value to the `replacements` dictionary in `build_readme()`:
 
 ```python
 "{{CURRENT_FOCUS}}": build_current_focus(stats),
 ```
 
-If the placeholder is not replaced, the script exits with:
-
-```text
-Unresolved template placeholders: {{YOUR_PLACEHOLDER}}
-```
-
-That safety check prevents a broken README from being committed.
+The script exits with an error if a placeholder is left unresolved, so a broken
+README is never committed.
 
 ### 6.5 Available placeholders
 
@@ -396,107 +426,175 @@ That safety check prevents a broken README from being committed.
 | `{{REPO_URL}}` | Full repository URL |
 | `{{LAST_UPDATED}}` | Generator timestamp |
 | `{{CURRENT_FOCUS}}` | Topic of the most recently added solution |
-| `{{STAT_BADGES}}` | Generated shields.io stat badges |
-| `{{TOPIC_TARGET}}` | Soft goal per topic |
-| `{{TOPIC_TABLE}}` | Topic progress table |
-| `{{NEXT_MILESTONE}}` | Next 50-solution milestone |
+| `{{GOAL_TABLE}}` | Started date, sheet, targets, and focus |
+| `{{OVERALL_PROGRESS}}` | Text progress bar to `target_problems` |
+| `{{STATS_TABLE}}` | Total, difficulty split, current and best streak |
+| `{{STRIVER_TABLE}}` | Striver A2Z step tracker |
+| `{{MILESTONES}}` | Auto-checked problem, streak, and skill milestones |
+| `{{NEXT_MILESTONE}}` | Next unachieved problem milestone |
+| `{{RECENT_TABLE}}` | Five most recent solutions |
+| `{{WEEKLY_LOG}}` | Last eight weeks of topics, solutions, and commits |
+| `{{REPO_TREE}}` | Real top-level folders and solution counts |
+| `{{CONTEST_SECTION}}` | Optional contest log from `contests.json` |
 | `{{TOTAL_SOLUTIONS}}` | Total tracked code files |
 | `{{TARGET_PROBLEMS}}` | Overall target |
 | `{{PROGRESS_PCT}}` | Overall percentage |
-| `{{RECENT_TABLE}}` | Last 8 solutions |
-| `{{ROADMAP}}` | Auto-checked phase checklist |
-| `{{LEETCODE_SECTION}}` | Optional LeetCode card |
+| `{{STAT_BADGES}}` | Legacy shields.io stat badges, not used by the default template |
+| `{{TOPIC_TABLE}}` | Legacy topic table, not used by the default template |
+| `{{ROADMAP}}` | Legacy phase checklist, not used by the default template |
+| `{{LEETCODE_SECTION}}` | Legacy LeetCode card, not used by the default template |
 
-> The default README is intentionally concise for recruiters. The topic table,
-> roadmap, and long automation explainer are available as placeholders, but the
-> default template keeps them out and lets the dashboard carry that information.
-> Add them back if you want a more detailed profile.
+### 6.6 Change the hero banner
 
-### 6.6 Change the header banner
+The header is a local SVG, not an external service. Edit `render_hero()` in
+`maintenance/scripts/update_readme.py`. See section 7.3 for the layout table.
 
-The banner uses `capsule-render`:
+The hero is generated on every run, so change the function rather than the SVG.
+
+### 6.7 Change the GIF
+
+The README uses one local GIF:
 
 ```html
-<img src="https://capsule-render.vercel.app/api?type=waving&color=...&text=DSA%20%C3%97%20C%2B%2B..." />
+<img src="maintenance/assets/grind.gif" alt="I'm ready to slay: the DSA grind" width="620" />
 ```
 
-Edit the query string in `maintenance/scripts/readme_template.md`.
+To swap it:
 
-Useful parameters:
+1. Put the new file in `maintenance/assets/`.
+2. Update the `src` in `maintenance/scripts/readme_template.md`.
+3. Update the `alt` text.
+4. Keep the file under about 5 MB and around 500 to 700 pixels wide.
+5. Change the `width` if the new image is a different shape.
 
-| Parameter | Meaning |
-| :--- | :--- |
-| `type=waving` | Waving banner |
-| `color=0:hex,100:hex` | Gradient stops |
-| `height=240` | Banner height |
-| `text=...` | Main text (URL-encoded) |
-| `fontSize=72` | Text size |
-| `animation=fadeIn` | Animation |
-| `desc=...` | Subtitle |
-| `descAlignY=56` | Subtitle position |
+The other GIFs are kept in `maintenance/assets/alternates/` and are not loaded
+by the README. They do not affect rendering speed.
 
-### 6.7 Change the typing animation
+### 6.8 Change the Striver A2Z tracker
 
-Edit the `readme-typing-svg` URL in the template:
+The tracker reads `striver_steps` from `maintenance/scripts/config.json`:
+
+```json
+{
+  "name": "Arrays",
+  "topics": ["Arrays", "Two Pointers", "Sliding Window"]
+}
+```
+
+The `topics` names must match the `topics` list in the same file. Each step
+shows:
+
+- **Solved**: total solutions in the mapped topics
+- **Coverage**: how many mapped topics have at least one solution
+- **Status**: ⬜ none, 🟨 some, 🟩 all mapped topics started
+
+Add, remove, or reorder steps by editing the array. The table updates on the
+next run.
+
+> Coverage is about topics started, not every problem in the sheet. If you want
+> strict sheet completion, add a `target` per step and compare `solved` to it.
+
+### 6.9 Change milestones
+
+Problem milestones live in `PROBLEM_MILESTONES`:
+
+```python
+PROBLEM_MILESTONES = [
+    (10, "First steps"),
+    (50, "Building momentum"),
+    (100, "Triple digits"),
+    (250, "Serious grinder"),
+    (455, "A2Z sheet complete"),
+    (600, "Beyond the sheet"),
+    (800, "Elite territory"),
+]
+```
+
+Streak milestones live in `STREAK_MILESTONES`:
+
+```python
+STREAK_MILESTONES = [7, 30, 50, 100, 200, 365]
+```
+
+Skill milestones are in `build_milestones()`. They use topic counts and
+difficulty counts, so they stay automatic. Contest skill milestones use the
+number of entries in `contests.json`.
+
+### 6.10 Change the weekly log, heatmap, and snake
+
+- Weekly log: `build_weekly_log(stats)` uses git history and the last eight
+  weeks. The current week is partial.
+- Heatmap: `render_activity(stats)` draws the last 365 days.
+- Snake: generated by `.github/workflows/snake.yml` on the `output` branch.
+  The template embeds the dark and light SVGs with a `<picture>` element.
+
+The snake is the only remote image in the README. It comes from the same
+repository, so it does not depend on a third-party image host. If it is missing,
+run **Actions → Generate Snake → Run workflow** once.
+
+### 6.11 Add or change the contest log
+
+The contest section is optional. It stays hidden until you create:
 
 ```text
-https://readme-typing-svg.demolab.com?font=JetBrains+Mono&...
+maintenance/scripts/contests.json
 ```
 
-Separate lines with `;` and URL-encode spaces as `+` or `%20`.
+Start from `contests.example.json`:
 
-### 6.8 Change badges
-
-Add or edit shields.io images in the template:
-
-```markdown
-![Label](https://img.shields.io/badge/Label-Value-COLOR?style=for-the-badge&logo=LOGO)
+```bash
+cp maintenance/scripts/contests.example.json maintenance/scripts/contests.json
 ```
 
-The generated stat badges come from `build_stat_badges()` in
-`maintenance/scripts/update_readme.py` if you want to change their colors or labels.
+Schema:
 
-### 6.9 Change the GitHub stats cards
-
-The default template uses these external images:
-
-- `github-readme-stats.vercel.app` for the main stats card
-- `github-readme-stats.vercel.app` for top languages
-- `skillicons.dev` for the tech stack
-
-Change the query parameters (`theme=tokyonight`, `hide_border=true`, etc.) or
-remove the sections entirely.
-
-The streak and trophy cards are not part of the default design, which keeps the
-profile focused. You can add them back from `streak-stats.demolab.com` or
-`github-profile-trophy.vercel.app` if you want them.
-
-> If one of these services is rate-limited or down, the image may fail to load.
-> The custom SVGs under `maintenance/assets/` do not depend on them.
-
-### 6.10 Change the snake section
-
-The snake is embedded from the `output` branch. If you rename the repo or
-username, update `maintenance/scripts/config.json`; the template uses
-`{{USERNAME}}` and `{{REPO}}`.
-
-To change colors, edit the `outputs` line in `.github/workflows/snake.yml`:
-
-```yaml
-output/github-contribution-grid-snake-dark.svg?palette=github-dark
+```json
+{
+  "profiles": {
+    "LeetCode": {
+      "handle": "your_handle",
+      "rating": "1850",
+      "url": "https://leetcode.com/u/your_handle"
+    }
+  },
+  "contests": [
+    {
+      "date": "2026-11-15",
+      "platform": "LeetCode",
+      "contest": "Weekly Contest 400",
+      "solved": 3,
+      "rank": 1200,
+      "rating": "+25",
+      "takeaway": "Need faster implementation on the third problem."
+    }
+  ]
+}
 ```
 
-Available palettes are documented by `platane/snk`.
+If both `profiles` and `contests` are empty, the whole section is omitted. If
+the file is invalid JSON, the section is also omitted, so the README cannot
+break because of it.
 
-### 6.11 Remove a section
+### 6.12 Remove or reorder sections
 
-Delete it from `maintenance/scripts/readme_template.md`. If it was a dynamic section, you can
-also remove its placeholder and the corresponding entry in `build_readme()`.
+Delete a section from `maintenance/scripts/readme_template.md`. If it uses a
+placeholder, remove the placeholder too, or keep the entry in `replacements`.
+Order is controlled only by the template.
 
-### 6.12 Reorder sections
+### 6.13 Unbreakable images policy
 
-Cut and paste sections in `maintenance/scripts/readme_template.md`. Keep the
-`<!-- AUTO-GENERATED -->` comment at the top.
+The README is designed to survive broken links:
+
+- The hero, dashboard, heatmap, divider, and GIF are local files.
+- The snake comes from this repository's own `output` branch.
+- External services such as capsule-render, typing-svg, shields.io, and
+  github-readme-stats are not used.
+- Tables and milestone lists are plain Markdown, so they render even if every
+  image fails.
+- The contest section is hidden when its data file is missing or invalid.
+
+If you add a new external image, expect it to break eventually. Download it or
+generate it locally when the image matters.
 
 ---
 
@@ -624,11 +722,19 @@ If you rename them, update the template image paths and the workflow's
 4. Ensure the workflow commits it (`git add README.md maintenance/assets/` already covers `maintenance/assets/`).
 5. Run locally to verify.
 
-### 7.7 Pop culture ideas
+### 7.7 Pop culture in this README
 
-The default design uses two original pieces of art: Matrix code rain in the
-hero and Pac-Man as the divider. Both are drawn in SVG, so they are safe to use
-and never depend on an external host.
+The default design uses three pop culture pieces:
+
+| Piece | Where | Format |
+| :--- | :--- | :--- |
+| Matrix code rain | Hero banner | Local SVG |
+| Pac-Man and ghosts | Divider before Connect | Local SVG |
+| "I'm ready to slay" knight | Under the hero | Local GIF |
+
+The chosen GIF is `maintenance/assets/grind.gif`. It is a short, readable loop
+with the message built into the frame, so it works even without the caption.
+The other GIFs you saved are in `maintenance/assets/alternates/`.
 
 Other themes that fit a DSA and C++ repository:
 
@@ -647,10 +753,10 @@ Other themes that fit a DSA and C++ repository:
 | **Star Wars** | Footer | "May the force be with you" |
 | **Among Us** | Bug fixing section | Finding the impostor in the code |
 
-### 7.8 Adding external images
+### 7.8 Adding images safely
 
-You can add a GIF or image anywhere the template allows normal Markdown or
-HTML. A few practical rules:
+The README intentionally uses almost no external images. If you add one, follow
+these rules:
 
 - Prefer SVG or PNG over GIF when you can. They load faster and look sharper.
 - Hotlinked GIFs can disappear. If the image matters, download it, place it in
@@ -659,6 +765,7 @@ HTML. A few practical rules:
   commons assets, or draw your own SVG.
 - Add a short `alt` text so the README still reads well if the image fails.
 - Keep the hero under about `1200 × 400` so it does not dominate the page.
+- Keep a README GIF under about 5 MB. The current `grind.gif` is about 3 MB.
 
 ---
 
@@ -793,12 +900,12 @@ In `maintenance/scripts/config.json`, add an object to `topics`:
 }
 ```
 
-Then add it to a phase if you want it on the roadmap:
+Then add it to a Striver step if it belongs to the A2Z tracker:
 
 ```json
 {
-  "name": "Phase 3 · Algorithms",
-  "topics": ["Recursion", "Backtracking", "Greedy", "Graphs", "Dynamic Programming", "Union Find"]
+  "name": "Graphs",
+  "topics": ["Graphs", "Union Find"]
 }
 ```
 
@@ -808,19 +915,19 @@ Run:
 python3 maintenance/scripts/update_readme.py
 ```
 
-The dashboard, topic table, and roadmap pick it up automatically.
+The dashboard and the Striver A2Z tracker pick it up automatically.
 
 ### 9.2 Rename a topic
 
 1. Change `name` in `config.json`.
-2. Update its entry in `phases`.
+2. Update the same name wherever it appears in `striver_steps`.
 3. Keep the old keyword in `match` if you want existing folders to keep working,
    or rename the folder too.
 
 ### 9.3 Remove a topic
 
 1. Remove it from `topics`.
-2. Remove it from `phases`.
+2. Remove it from `striver_steps`.
 3. Existing files fall back to `Misc` unless their folder/metadata matches
    another topic.
 
@@ -830,16 +937,15 @@ The dashboard, topic table, and roadmap pick it up automatically.
 "topic_target": 25
 ```
 
-This controls the progress bars in the topic table and dashboard. It does not
-cap the count.
+This controls the per-topic bars in the dashboard. It does not cap the count.
 
 ### 9.5 Change overall target
 
 ```json
-"target_problems": 500
+"target_problems": 455
 ```
 
-This controls the overall progress bar and next milestone.
+This controls the overall progress bar and the A2Z completion milestone.
 
 ### 9.6 Change timezone
 
@@ -850,21 +956,22 @@ This controls the overall progress bar and next milestone.
 This affects “today” for streaks and the timestamps in the generated SVGs.
 Use any IANA timezone name.
 
-### 9.7 Enable the LeetCode card
+### 9.7 Enable the LeetCode card (legacy)
 
 ```json
 "leetcode_username": "your-leetcode-username",
 "show_leetcode_card": true
 ```
 
-The card comes from `leetcard.jacoblin.cool`. If that service is unavailable,
-set `show_leetcode_card` back to `false`.
+This is off by default and the current template does not show it. If you turn it
+on, the card comes from `leetcard.jacoblin.cool`, which is a third-party host.
+That conflicts with the unbreakable images policy, so prefer the local dashboard.
 
-### 9.8 Change phases
+### 9.8 Change the Striver A2Z tracker
 
-Edit the `phases` array. Topic names must match `topics[].name` exactly.
-The roadmap shows one checkbox per topic and auto-checks it when the topic has
-at least one solution.
+Edit the `striver_steps` array. Topic names must match `topics[].name` exactly.
+The tracker shows solved counts and topic coverage for each step, and
+auto-checks a step when all mapped topics have at least one solution.
 
 ---
 
@@ -1073,12 +1180,15 @@ https://raw.githubusercontent.com/zeditya/Dsa-cpp/output/github-contribution-gri
 
 4. Ensure `permissions: contents: write` is present in `snake.yml`.
 
-### 12.8 External GitHub cards do not load
+### 12.8 A remote image does not load
 
-Services like `github-readme-stats`, `streak-stats`, and `github-profile-trophy`
-can be rate-limited or temporarily down. The custom dashboard and heatmap still
-work. You can remove those sections from the template if you want a fully
-self-hosted README.
+The default README only uses one remote image: the contribution snake from this
+repository's own `output` branch. If it breaks, see 12.7.
+
+If you added a third-party image such as a stats card or trophy, expect it to be
+rate-limited or temporarily down. Replace it with a local asset under
+`maintenance/assets/`, or remove it from the template. A fully self-hosted
+README is the reliable option.
 
 ### 12.9 Stats are zero even though files exist
 
@@ -1216,8 +1326,9 @@ git push
 - The workflow uses the ephemeral `GITHUB_TOKEN`, not your personal token.
 - The `workflow` scope is powerful: it allows changing Actions files. Grant it
   only when needed.
-- External README images (stats cards, trophies) are third-party requests. If you
-  care about privacy, remove those sections and keep only the self-generated SVGs.
+- External README images are limited to the contribution snake, which comes from
+  this repository's own `output` branch. The rest of the visuals are local. Keep
+  it that way if you care about reliability and privacy.
 
 ---
 
@@ -1254,8 +1365,10 @@ gh workflow run snake.yml --repo zeditya/Dsa-cpp
 | Goal | File |
 | :--- | :--- |
 | Change README text/design | `maintenance/scripts/readme_template.md` |
-| Change targets/topics/phases/timezone | `maintenance/scripts/config.json` |
+| Change targets/topics/steps/timezone | `maintenance/scripts/config.json` |
 | Change banner/dashboard/heatmap/divider visuals | `maintenance/scripts/update_readme.py` |
+| Swap the README GIF | `maintenance/assets/grind.gif` and the template |
+| Add contest data | `maintenance/scripts/contests.json` |
 | Add a solution | `DSA/<Topic>/...` |
 | Change automation schedule | `.github/workflows/update-readme.yml` |
 | Change snake settings | `.github/workflows/snake.yml` |

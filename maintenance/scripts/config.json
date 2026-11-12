@@ -1,9 +1,14 @@
 {
   "username": "zeditya",
   "repo": "Dsa-cpp",
-  "target_problems": 500,
+  "display_name": "Aditya",
+  "target_problems": 455,
   "topic_target": 25,
   "timezone": "Asia/Kolkata",
+  "sheet_name": "Striver's A2Z DSA Sheet",
+  "sheet_url": "https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2/",
+  "daily_target": "1-2 problems",
+  "long_term_target": "600-800+ problems",
   "leetcode_username": "",
   "show_leetcode_card": false,
   "exclude_dirs": [
@@ -166,6 +171,38 @@
       "icon": "📦",
       "match": ["misc", "miscellaneous", "others", "general"]
     }
+  ],
+  "striver_steps": [
+    {
+      "name": "Learn the Basics",
+      "topics": ["C++ & STL", "Math", "Bit Manipulation", "Hashing"]
+    },
+    { "name": "Sorting Techniques", "topics": ["Sorting"] },
+    {
+      "name": "Arrays",
+      "topics": ["Arrays", "Two Pointers", "Sliding Window"]
+    },
+    { "name": "Binary Search", "topics": ["Binary Search"] },
+    { "name": "Strings", "topics": ["Strings"] },
+    { "name": "Linked List", "topics": ["Linked List"] },
+    {
+      "name": "Recursion",
+      "topics": ["Recursion", "Backtracking"]
+    },
+    { "name": "Bit Manipulation", "topics": ["Bit Manipulation"] },
+    { "name": "Stack and Queues", "topics": ["Stack & Queue"] },
+    {
+      "name": "Sliding Window and Two Pointers",
+      "topics": ["Sliding Window", "Two Pointers"]
+    },
+    { "name": "Heaps", "topics": ["Heaps"] },
+    { "name": "Greedy Algorithms", "topics": ["Greedy"] },
+    { "name": "Binary Trees", "topics": ["Trees & BST"] },
+    { "name": "Binary Search Trees", "topics": ["Trees & BST"] },
+    { "name": "Graphs", "topics": ["Graphs"] },
+    { "name": "Dynamic Programming", "topics": ["Dynamic Programming"] },
+    { "name": "Tries", "topics": ["Tries"] },
+    { "name": "Strings (Advanced)", "topics": ["Strings"] }
   ],
   "phases": [
     {

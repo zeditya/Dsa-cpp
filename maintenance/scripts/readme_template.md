@@ -12,134 +12,181 @@
 
 <br/>
 
-<a href="https://git.io/typing-svg">
-  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=18&duration=2600&pause=900&color=22D3EE&center=true&vCenter=true&width=760&lines=Data+Structures+%26+Algorithms+in+C%2B%2B;One+problem+at+a+time.;Learning+in+public%2C+shipping+consistently." alt="Typing SVG" />
-</a>
+<img src="maintenance/assets/grind.gif" alt="I'm ready to slay: the DSA grind" width="620" />
 
 <br/>
 
-[![C++](https://img.shields.io/badge/C%2B%2B-17%2F20-00599C?style=for-the-badge&logo=cplusplus&logoColor=white)](#tech-stack)
-[![DSA](https://img.shields.io/badge/DSA-Problem%20Solving-0f766e?style=for-the-badge&logo=leetcode&logoColor=white)](#progress-at-a-glance)
-[![Practice](https://img.shields.io/badge/Practice-Consistent-22c55e?style=for-the-badge&logo=github&logoColor=white)](#recent-work)
+**Consistency over intensity. Every day. Until graduation and beyond.**
 
-</div>
-
-## Hey, I'm Aditya
-
-I'm a computer science student who enjoys turning messy problems into clean C++ solutions. This repository is my public practice log: data structures, algorithms, and the reasoning behind each solution.
-
-I optimize for three things: **code you can explain**, **decisions you can defend**, and **progress you can measure**.
-
-> First, solve the problem. Then, write the code.
-
-<div align="center">
-
-`Focus` **{{CURRENT_FOCUS}}**  ·  `Next milestone` {{NEXT_MILESTONE}}  ·  `Goal` **{{TARGET_PROBLEMS}} solutions**
-
-</div>
-
-## Progress at a Glance
-
-<div align="center">
-
-{{STAT_BADGES}}
-
-<br/><br/>
-
-<a href="{{REPO_URL}}">
-  <img src="maintenance/assets/dashboard.svg" alt="DSA progress dashboard" width="100%" />
-</a>
-
-</div>
-
-<sub>Auto-updated on {{LAST_UPDATED}}.</sub>
-
-## What's Inside
-
-- **DSA solutions** organized by topic, from arrays and strings to graphs and dynamic programming.
-- **Clean C++** using the STL, object-oriented design, and modern language features.
-- **Problem analysis** covering the approach, time complexity, and space complexity of each solution.
-- **A visible habit** tracked automatically from the repository's commit history.
-
-## How I Approach a Problem
-
-1. **Read the constraints.** The bounds usually hint at the intended complexity.
-2. **Solve it simply.** Start with a brute-force version that is correct.
-3. **Remove repeated work.** Apply the right pattern or data structure.
-4. **Explain the trade-off.** Document time and space complexity, then refactor.
-
-## Learning Roadmap
-
-<details>
-<summary><b>Open the full roadmap</b></summary>
-
-<br/>
-
-{{ROADMAP}}
-
-</details>
-
-## Recent Work
-
-{{RECENT_TABLE}}
-
-## Consistency
-
-<div align="center">
-  <img src="maintenance/assets/activity.svg" alt="Commit activity for the last 365 days" width="100%" />
-</div>
-
-## GitHub Activity
-
-<div align="center">
-
-<img height="170" src="https://github-readme-stats.vercel.app/api?username={{USERNAME}}&show_icons=true&theme=tokyonight&hide_border=true&include_all_commits=true&count_private=true&rank_icon=github" alt="GitHub stats" />
-<img height="170" src="https://github-readme-stats.vercel.app/api/top-langs/?username={{USERNAME}}&layout=compact&theme=tokyonight&hide_border=true&langs_count=6" alt="Top languages" />
-
-</div>
-
-{{LEETCODE_SECTION}}
-
-## Contribution Activity
-
-<div align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/{{USERNAME}}/{{REPO}}/output/github-contribution-grid-snake-dark.svg" />
-    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/{{USERNAME}}/{{REPO}}/output/github-contribution-grid-snake.svg" />
-    <img alt="Contribution activity" src="https://raw.githubusercontent.com/{{USERNAME}}/{{REPO}}/output/github-contribution-grid-snake.svg" />
-  </picture>
-</div>
-
-## Tech Stack
-
-<div align="center">
-  <img src="https://skillicons.dev/icons?i=cpp,c,python,git,github,githubactions,vscode,linux,bash,cmake&theme=dark" alt="Tech stack" />
-</div>
-
-<img src="maintenance/assets/divider.svg" alt="Pac-Man divider" width="100%" />
-
-## Let's Connect
-
-I'm open to internships, collaborations, and good problem-solving conversations.
-
-<div align="center">
-
-[![GitHub](https://img.shields.io/badge/GitHub-zeditya-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/{{USERNAME}})
-
-<br/><br/>
-
-<a href="{{REPO_URL}}/stargazers">
-  <img src="https://img.shields.io/github/stars/{{USERNAME}}/{{REPO}}?style=for-the-badge&color=facc15&logo=github&label=Star%20the%20repo" alt="Star the repo" />
-</a>
+**[The Goal](#-the-goal) • [Tracker](#-progress-tracker) • [Milestones](#-milestones) • [Method](#-my-method) • [Weekly Log](#-weekly-log) • [Resources](#-resources)**
 
 </div>
 
 ---
 
+## 🎯 The Goal
+
+> Become an elite problem solver. Solve problems daily, learn every pattern deeply, and build a record that speaks for itself, **until graduation and beyond**.
+
+{{GOAL_TABLE}}
+
+`Next milestone` {{NEXT_MILESTONE}}
+
+---
+
+## 📊 Progress Tracker
+
+### Overall
+
+```text
+{{OVERALL_PROGRESS}}
+```
+
+> The bar is generated from the current repository. Every new solution moves it.
+
+### Stats at a glance
+
+{{STATS_TABLE}}
+
+<div align="center">
+  <img src="maintenance/assets/dashboard.svg" alt="DSA progress dashboard" width="100%" />
+</div>
+
+<sub>Auto-updated on {{LAST_UPDATED}}.</sub>
+
+### Striver's A2Z: Step by Step
+
+Status key: ⬜ Not started • 🟨 In progress • 🟩 All mapped topics started
+
+{{STRIVER_TABLE}}
+
+> Coverage tracks topics started, not every problem in the sheet. It updates from the folders and metadata in this repository.
+
+---
+
+## 🏅 Milestones
+
+{{MILESTONES}}
+
+> Every checkbox is recalculated from the repository. Nothing is updated by hand.
+
+---
+
+## 🧠 My Method
+
+Every problem goes through the same loop:
+
+```text
+┌─────────────────────────────────────────────────────────┐
+│  1. THINK    20-30 min on paper, no help                │
+│  2. HINT     only the technique name, then retry        │
+│  3. LEARN    read/watch solution, then CLOSE IT         │
+│  4. CODE     rewrite from scratch, from memory          │
+│  5. NOTE     pattern + mistake, then save the note      │
+│  6. REVISE   re-solve after 3 days, then after 2-3 wks  │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Rules I follow**
+
+- Only push code I fully understand and can explain out loud
+- Never skip the revision step
+- Track topics mastered, not just days
+- Rest one day a week. Burnout is the real enemy
+- Exam weeks: minimum 1 problem, no guilt
+
+---
+
+## 🚀 Recent Work
+
+{{RECENT_TABLE}}
+
+---
+
+## 🗓️ Weekly Log
+
+{{WEEKLY_LOG}}
+
+> Auto-generated from git history. The current week is partial.
+
+---
+
+## 🔥 Consistency
+
+<div align="center">
+  <img src="maintenance/assets/activity.svg" alt="Commit activity for the last 365 days" width="100%" />
+</div>
+
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/{{USERNAME}}/{{REPO}}/output/github-contribution-grid-snake-dark.svg" />
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/{{USERNAME}}/{{REPO}}/output/github-contribution-grid-snake.svg" />
+    <img alt="Contribution snake animation" src="https://raw.githubusercontent.com/{{USERNAME}}/{{REPO}}/output/github-contribution-grid-snake.svg" width="100%" />
+  </picture>
+</div>
+
+> The heatmap shows the habit. The snake eats the contributions.
+
+---
+
+## 📁 Repo Structure
+
+```text
+{{REPO_TREE}}
+```
+
+Every solution file starts with a short metadata header:
+
+```cpp
+// Problem  : <name> | <link>
+// Pattern  : <e.g. two pointers, binary search on answer>
+// Approach : <1-2 lines in my own words>
+// Time     : O(?)    Space : O(?)
+// Revised  : [ ] 3 days   [ ] 2-3 weeks
+```
+
+### Running a solution
+
+```bash
+g++ -std=c++17 -O2 -Wall solution.cpp -o solution && ./solution
+```
+
+### Toolbox
+
+`C++17` • `STL` • `Git` • `GitHub Actions` • `VS Code` • `Linux` • `CMake`
+
+---
+
+{{CONTEST_SECTION}}
+
+## 📚 Resources
+
+| Purpose | Resource |
+|:---|:---|
+| 🗺️ Main roadmap | [Striver's A2Z DSA Sheet](https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2/) |
+| 📖 C++ reference | [learncpp.com](https://www.learncpp.com/) • [cppreference.com](https://en.cppreference.com/) |
+| 🎥 Video lectures | [take U forward](https://www.youtube.com/@takeUforward) |
+| 🧮 Concepts | [Abdul Bari](https://www.youtube.com/@abdul_bari) |
+| 🏋️ Practice | [LeetCode](https://leetcode.com/) • [CSES Problem Set](https://cses.fi/problemset/) |
+| 🏁 Contests | [Codeforces](https://codeforces.com/) • [CodeChef](https://www.codechef.com/) |
+| 📘 Advanced | [CP-Algorithms](https://cp-algorithms.com/) • *Competitive Programmer's Handbook* |
+
+---
+
+## 🤝 Let's Connect
+
+I'm open to internships, collaborations, and good problem-solving conversations.
+
 <div align="center">
 
-<sub>This README updates automatically. <a href="maintenance/MANUAL.md">Repository manual</a></sub>
+[GitHub](https://github.com/{{USERNAME}}) • [Star this repository]({{REPO_URL}}/stargazers) • [Repository manual](maintenance/MANUAL.md)
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:06b6d4,50:0f766e,100:0f172a&height=110&section=footer" alt="Footer" />
+</div>
+
+<img src="maintenance/assets/divider.svg" alt="Pac-Man divider" width="100%" />
+
+<div align="center">
+
+<sub>This README updates automatically on every push. The dashboard, tracker, milestones, and log are generated from the repository.</sub>
 
 </div>

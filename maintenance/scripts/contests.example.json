@@ -1,0 +1,30 @@
+{
+  "profiles": {
+    "LeetCode": {
+      "handle": "your_handle",
+      "rating": "n/a",
+      "url": "https://leetcode.com/u/your_handle"
+    },
+    "Codeforces": {
+      "handle": "your_handle",
+      "rating": "n/a",
+      "url": "https://codeforces.com/profile/your_handle"
+    },
+    "CodeChef": {
+      "handle": "your_handle",
+      "rating": "n/a",
+      "url": "https://www.codechef.com/users/your_handle"
+    }
+  },
+  "contests": [
+    {
+      "date": "2026-11-15",
+      "platform": "LeetCode",
+      "contest": "Weekly Contest 400",
+      "solved": 3,
+      "rank": 1200,
+      "rating": "+25",
+      "takeaway": "Need faster implementation on the third problem."
+    }
+  ]
+}
