@@ -62,7 +62,7 @@ Total solved:  0 / 455
   <img src=".github/readme/assets/dashboard.svg" alt="DSA progress dashboard" width="100%" />
 </div>
 
-<sub>Auto-updated on 12 Nov 2026, 10:20 PM IST.</sub>
+<sub>Auto-updated on 12 Nov 2026, 10:21 PM IST.</sub>
 
 ### Striver's A2Z: Step by Step
 
@@ -160,7 +160,7 @@ Every problem goes through the same loop:
 
 | Week | Topics | Solved | Commits |
 |:---|:---|:---:|:---:|
-| 09 Nov - 12 Nov (current) | - | 0 | 7 |
+| 09 Nov - 12 Nov (current) | - | 0 | 8 |
 | 02 Nov - 08 Nov | - | 0 | 0 |
 | 26 Oct - 01 Nov | - | 0 | 0 |
 | 19 Oct - 25 Oct | - | 0 | 0 |
