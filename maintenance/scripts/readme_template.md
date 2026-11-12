@@ -70,10 +70,6 @@ I care about clean implementation, clear reasoning, and steady progress.
 <img height="170" src="https://github-readme-stats.vercel.app/api?username={{USERNAME}}&show_icons=true&theme=tokyonight&hide_border=true&include_all_commits=true&count_private=true&rank_icon=github" alt="GitHub stats" />
 <img height="170" src="https://github-readme-stats.vercel.app/api/top-langs/?username={{USERNAME}}&layout=compact&theme=tokyonight&hide_border=true&langs_count=6" alt="Top languages" />
 
-<br/>
-
-<img src="https://streak-stats.demolab.com?user={{USERNAME}}&theme=tokyonight&hide_border=true&date_format=j%20M%5B%20Y%5D" alt="GitHub streak" />
-
 </div>
 
 {{LEETCODE_SECTION}}

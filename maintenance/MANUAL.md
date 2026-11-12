@@ -403,6 +403,11 @@ That safety check prevents a broken README from being committed.
 | `{{ROADMAP}}` | Auto-checked phase checklist |
 | `{{LEETCODE_SECTION}}` | Optional LeetCode card |
 
+> The default README is intentionally concise for recruiters. The topic table,
+> roadmap, and long automation explainer are available as placeholders, but the
+> default template keeps them out and lets the dashboard carry that information.
+> Add them back if you want a more detailed profile.
+
 ### 6.6 Change the header banner
 
 The banner uses `capsule-render`:
@@ -447,17 +452,20 @@ Add or edit shields.io images in the template:
 The generated stat badges come from `build_stat_badges()` in
 `maintenance/scripts/update_readme.py` if you want to change their colors or labels.
 
-### 6.9 Change the GitHub stats / streak / trophy cards
+### 6.9 Change the GitHub stats cards
 
-These are external images in `maintenance/scripts/readme_template.md`:
+The default template uses these external images:
 
-- `github-readme-stats.vercel.app`
-- `streak-stats.demolab.com`
-- `github-profile-trophy.vercel.app`
-- `skillicons.dev`
+- `github-readme-stats.vercel.app` for the main stats card
+- `github-readme-stats.vercel.app` for top languages
+- `skillicons.dev` for the tech stack
 
 Change the query parameters (`theme=tokyonight`, `hide_border=true`, etc.) or
 remove the sections entirely.
+
+The streak and trophy cards are not part of the default design, which keeps the
+profile focused. You can add them back from `streak-stats.demolab.com` or
+`github-profile-trophy.vercel.app` if you want them.
 
 > If one of these services is rate-limited or down, the image may fail to load.
 > The custom `maintenance/assets/dashboard.svg` and `maintenance/assets/activity.svg` do not depend on
@@ -466,7 +474,8 @@ remove the sections entirely.
 ### 6.10 Change the snake section
 
 The snake is embedded from the `output` branch. If you rename the repo or
-username, update `config.json`; the template uses `{{USERNAME}}` and `{{REPO}}`.
+username, update `maintenance/scripts/config.json`; the template uses
+`{{USERNAME}}` and `{{REPO}}`.
 
 To change colors, edit the `outputs` line in `.github/workflows/snake.yml`:
 
