@@ -10,7 +10,7 @@ on:
     paths-ignore:
       - "output/**"
       - "README.md"
-      - "maintenance/**"
+      - ".github/readme/**"
 
 permissions:
   contents: write

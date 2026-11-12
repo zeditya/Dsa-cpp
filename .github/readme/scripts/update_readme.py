@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Rebuild README.md, maintenance/assets/dashboard.svg and
-maintenance/assets/activity.svg from the repo.
+Rebuild README.md, .github/readme/assets/dashboard.svg and
+.github/readme/assets/activity.svg from the repo.
 
 The script is intentionally dependency-free (Python standard library only) so
 GitHub Actions can run it without installing anything.
 
 Run locally:
-    python3 maintenance/scripts/update_readme.py
+    python3 .github/readme/scripts/update_readme.py
 """
 
 from __future__ import annotations
@@ -36,10 +36,10 @@ def find_repo_root(start: Path) -> Path:
 
 
 ROOT = find_repo_root(Path(__file__).resolve().parent)
-CONFIG_PATH = ROOT / "maintenance" / "scripts" / "config.json"
-TEMPLATE_PATH = ROOT / "maintenance" / "scripts" / "readme_template.md"
+CONFIG_PATH = ROOT / ".github" / "readme" / "scripts" / "config.json"
+TEMPLATE_PATH = ROOT / ".github" / "readme" / "scripts" / "readme_template.md"
 README_PATH = ROOT / "README.md"
-ASSETS_DIR = ROOT / "maintenance" / "assets"
+ASSETS_DIR = ROOT / ".github" / "readme" / "assets"
 
 SANS = "Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif"
 MONO = "'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace"
@@ -702,7 +702,7 @@ def build_weekly_log(stats: dict) -> str:
 
 
 def build_repo_tree(stats: dict) -> str:
-    excluded = {".git", ".github", "maintenance", "output", "node_modules", "build", "bin"}
+    excluded = {".git", ".github", "output", "node_modules", "build", "bin"}
     entries: list[tuple[str, str]] = []
     for entry in sorted(ROOT.iterdir()):
         if not entry.is_dir() or entry.name in excluded:
@@ -713,12 +713,7 @@ def build_repo_tree(stats: dict) -> str:
         entries.append(
             (entry.name + "/", f"{count} solution" + ("" if count == 1 else "s"))
         )
-    entries.extend(
-        [
-            ("maintenance/", "repo tooling"),
-            ("README.md", "auto-generated profile"),
-        ]
-    )
+    entries.append(("README.md", "auto-generated profile"))
     lines = ["Dsa-cpp/"]
     for index, (label, note) in enumerate(entries):
         connector = "└──" if index == len(entries) - 1 else "├──"
@@ -727,7 +722,7 @@ def build_repo_tree(stats: dict) -> str:
 
 
 def load_contests() -> dict:
-    path = ROOT / "maintenance" / "scripts" / "contests.json"
+    path = ROOT / ".github" / "readme" / "scripts" / "contests.json"
     if not path.exists():
         return {}
     try:
@@ -784,7 +779,7 @@ def build_contest_section(stats: dict) -> str:
 
     parts.append(
         "<sub>Contest data is read from "
-        "<code>maintenance/scripts/contests.json</code>.</sub>"
+        "<code>.github/readme/scripts/contests.json</code>.</sub>"
     )
     return "\n".join(parts)
 
@@ -1343,9 +1338,9 @@ def main() -> None:
     (ASSETS_DIR / "divider.svg").write_text(render_divider(), encoding="utf-8")
 
     print(
-        f"Rebuilt README.md, maintenance/assets/hero.svg, "
-        f"maintenance/assets/dashboard.svg, maintenance/assets/activity.svg and "
-        f"maintenance/assets/divider.svg ({stats['total']} solutions, "
+        f"Rebuilt README.md, .github/readme/assets/hero.svg, "
+        f".github/readme/assets/dashboard.svg, .github/readme/assets/activity.svg and "
+        f".github/readme/assets/divider.svg ({stats['total']} solutions, "
         f"{stats['covered']}/{stats['total_topics']} topics, "
         f"{stats['current_streak']}d streak)."
     )

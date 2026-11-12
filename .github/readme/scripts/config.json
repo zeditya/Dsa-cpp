@@ -16,7 +16,6 @@
     ".github",
     ".vscode",
     ".idea",
-    "maintenance",
     "scripts",
     "templates",
     "assets",
