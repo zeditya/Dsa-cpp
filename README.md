@@ -44,7 +44,7 @@ The goal is simple: get good enough at the basics that new problems stop looking
   <img src=".github/readme/assets/dashboard.svg" alt="DSA progress dashboard" width="100%" />
 </div>
 
-<sub>Updated 12 Nov 2026, 10:37 PM IST.</sub>
+<sub>Updated 12 Nov 2026, 10:38 PM IST.</sub>
 
 ### Striver's A2Z
 
@@ -128,7 +128,7 @@ No solutions yet. Add a file under `DSA/` and it will appear here after the next
 
 | Week | Topics | Solved | Commits |
 |:---|:---|:---:|:---:|
-| 09 Nov - 12 Nov (current) | - | 0 | 9 |
+| 09 Nov - 12 Nov (current) | - | 0 | 10 |
 | 02 Nov - 08 Nov | - | 0 | 0 |
 | 26 Oct - 01 Nov | - | 0 | 0 |
 | 19 Oct - 25 Oct | - | 0 | 0 |
