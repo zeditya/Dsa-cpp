@@ -36,7 +36,7 @@ The goal is simple: get good enough at the basics that new problems stop looking
 
 | 🧩 Solved | 🟢 Easy | 🟡 Medium | 🔴 Hard | 🔥 Streak | 🏆 Best | 📅 Active |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| **0** / 455 | 0 | 0 | 0 | 1 day | 1 day | 1 |
+| **0** / 455 | 0 | 0 | 0 | 2 days | 2 days | 2 |
 
 <div align="center">
   <img src=".github/readme/assets/dashboard.svg" alt="DSA progress dashboard" width="100%" />
@@ -149,7 +149,7 @@ No solutions logged yet.
 
 | Week | Topics | Solved | Commits |
 |:---|:---|:---:|:---:|
-| 09 Nov - 13 Nov (current) | - | 0 | 12 |
+| 09 Nov - 13 Nov (current) | - | 0 | 13 |
 
 > The log is generated from my commits. Empty weeks are hidden and the current week is partial.
 
@@ -216,7 +216,7 @@ I'm open to internships, collaborations, and conversations about problem solving
 
 </div>
 
-**Currently:** working through Striver's A2Z sheet · 🎯 455 problems to go · 🔥 1-day streak
+**Currently:** working through Striver's A2Z sheet · 🎯 455 problems to go · 🔥 2-day streak
 
 | 🤝 Open to | 💬 Ask me about |
 |:---|:---|

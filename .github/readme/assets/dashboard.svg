@@ -40,7 +40,7 @@
 <rect x="335" y="166" width="255" height="104" rx="16" fill="#101c2e" stroke="#1e3a5f" stroke-width="1" />
 <rect x="335" y="166" width="4" height="104" rx="2" fill="#fb923c" />
 <text x="359" y="196" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10.5" font-weight="700" fill="#7dd3fc" text-anchor="start" letter-spacing="1.2">CURRENT STREAK</text>
-<text x="359" y="236" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="32" font-weight="700" fill="#f8fafc" text-anchor="start">1d</text>
+<text x="359" y="236" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="32" font-weight="700" fill="#f8fafc" text-anchor="start">2d</text>
 <text x="359" y="256" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10.5" font-weight="400" fill="#94a3b8" text-anchor="start">consecutive active days</text>
 <rect x="610" y="166" width="255" height="104" rx="16" fill="#101c2e" stroke="#1e3a5f" stroke-width="1" />
 <rect x="610" y="166" width="4" height="104" rx="2" fill="#a78bfa" />
@@ -50,7 +50,7 @@
 <rect x="885" y="166" width="255" height="104" rx="16" fill="#101c2e" stroke="#1e3a5f" stroke-width="1" />
 <rect x="885" y="166" width="4" height="104" rx="2" fill="#4ade80" />
 <text x="909" y="196" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10.5" font-weight="700" fill="#7dd3fc" text-anchor="start" letter-spacing="1.2">ACTIVE DAYS</text>
-<text x="909" y="236" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="32" font-weight="700" fill="#f8fafc" text-anchor="start">1</text>
+<text x="909" y="236" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="32" font-weight="700" fill="#f8fafc" text-anchor="start">2</text>
 <text x="909" y="256" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10.5" font-weight="400" fill="#94a3b8" text-anchor="start">days with commits</text>
 <text x="60" y="312" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="11.5" font-weight="700" fill="#94a3b8" text-anchor="start" letter-spacing="1.4">OVERALL PROGRESS</text>
 <text x="1140" y="312" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="13" font-weight="700" fill="#e2e8f0" text-anchor="end">0 / 455  ·  0%</text>
