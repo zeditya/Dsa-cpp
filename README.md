@@ -16,7 +16,7 @@
 
 <br/>
 
-**[What this is](#what-this-is) • [Progress](#progress) • [How I practice](#how-i-practice) • [Activity](#activity) • [Repo](#repo) • [Resources](#resources) • [Connect](#connect)**
+**[What this is](#what-this-is) • [Progress](#progress) • [How I practice](#how-i-practice) • [Activity](#activity) • [Repo](#repo) • [Connect](#connect)**
 
 </div>
 
@@ -34,50 +34,70 @@ The goal is simple: get good enough at the basics that new problems stop looking
 
 ## Progress
 
-| 🧩 Total Solved | 🟢 Easy | 🟡 Medium | 🔴 Hard | 🔥 Current Streak | 🏆 Best Streak |
-|:---:|:---:|:---:|:---:|:---:|:---:|
-| **0** | 0 | 0 | 0 | 1 day | 1 day |
+| 🧩 Solved | 🟢 Easy | 🟡 Medium | 🔴 Hard | 🔥 Streak | 🏆 Best | 📅 Active |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **0** / 455 | 0 | 0 | 0 | 1 day | 1 day | 1 |
 
 <div align="center">
   <img src=".github/readme/assets/dashboard.svg" alt="DSA progress dashboard" width="100%" />
 </div>
 
-<sub>Updated 13 Nov 2026, 05:24 AM IST.</sub>
+<sub>Updated 13 Nov 2026, 04:25 PM IST.</sub>
 
-<details>
-<summary><strong>Striver's A2Z tracker</strong></summary>
+### The big picture
 
-Status: ⬜ Not started • 🟨 In progress • 🟩 All mapped topics started
+`░░░░░░░░░░░░░░░░░░░░░░░░` **0% of the A2Z sheet**
 
-| # | Step | Status | Solved | Coverage |
-|:-:|:---|:---:|:---:|:---|
-| 1 | Learn the Basics | ⬜ | 0 | `░░░░░░░░░░░░░░░░` 0% |
-| 2 | Sorting Techniques | ⬜ | 0 | `░░░░░░░░░░░░░░░░` 0% |
-| 3 | Arrays | ⬜ | 0 | `░░░░░░░░░░░░░░░░` 0% |
-| 4 | Binary Search | ⬜ | 0 | `░░░░░░░░░░░░░░░░` 0% |
-| 5 | Strings | ⬜ | 0 | `░░░░░░░░░░░░░░░░` 0% |
-| 6 | Linked List | ⬜ | 0 | `░░░░░░░░░░░░░░░░` 0% |
-| 7 | Recursion | ⬜ | 0 | `░░░░░░░░░░░░░░░░` 0% |
-| 8 | Bit Manipulation | ⬜ | 0 | `░░░░░░░░░░░░░░░░` 0% |
-| 9 | Stack and Queues | ⬜ | 0 | `░░░░░░░░░░░░░░░░` 0% |
-| 10 | Sliding Window and Two Pointers | ⬜ | 0 | `░░░░░░░░░░░░░░░░` 0% |
-| 11 | Heaps | ⬜ | 0 | `░░░░░░░░░░░░░░░░` 0% |
-| 12 | Greedy Algorithms | ⬜ | 0 | `░░░░░░░░░░░░░░░░` 0% |
-| 13 | Binary Trees | ⬜ | 0 | `░░░░░░░░░░░░░░░░` 0% |
-| 14 | Binary Search Trees | ⬜ | 0 | `░░░░░░░░░░░░░░░░` 0% |
-| 15 | Graphs | ⬜ | 0 | `░░░░░░░░░░░░░░░░` 0% |
-| 16 | Dynamic Programming | ⬜ | 0 | `░░░░░░░░░░░░░░░░` 0% |
-| 17 | Tries | ⬜ | 0 | `░░░░░░░░░░░░░░░░` 0% |
-| 18 | Strings (Advanced) | ⬜ | 0 | `░░░░░░░░░░░░░░░░` 0% |
+**0 / 455** problems logged · **455** to go
 
-> Coverage counts topics started, not every problem in the sheet. It comes from the folders and metadata in this repo.
+| Difficulty | Solved | Mix |
+|:---|:---:|:---|
+| 🟢 Easy | 0 | `░░░░░░░░░░░░░░` 0% |
+| 🟡 Medium | 0 | `░░░░░░░░░░░░░░` 0% |
+| 🔴 Hard | 0 | `░░░░░░░░░░░░░░` 0% |
 
-</details>
+| This week | Last 7 days | Last 30 days | Avg / week | Projected finish |
+|:---:|:---:|:---:|:---:|:---:|
+| 0 | 0 | 0 | — | — |
+
+<sub>Pace is measured from my first commit. Projected finish assumes the current average holds.</sub>
+
+> **Next up:** Step 1 · **Learn the Basics** — 0 / 34 solved, 34 to go.
+
+### Striver's A2Z tracker
+
+Status: ⬜ Not started • 🟨 In progress • 🟩 Target reached
+
+| # | Step | Solved | Progress | Status |
+|:-:|:---|:---:|:---|:---:|
+| 1 | Learn the Basics | 0 / 34 | `░░░░░░░░░░░░` 0% | ⬜ |
+| 2 | Sorting Techniques | 0 / 7 | `░░░░░░░░░░░░` 0% | ⬜ |
+| 3 | Arrays | 0 / 46 | `░░░░░░░░░░░░` 0% | ⬜ |
+| 4 | Binary Search | 0 / 34 | `░░░░░░░░░░░░` 0% | ⬜ |
+| 5 | Strings | 0 / 15 | `░░░░░░░░░░░░` 0% | ⬜ |
+| 6 | Linked List | 0 / 32 | `░░░░░░░░░░░░` 0% | ⬜ |
+| 7 | Recursion | 0 / 27 | `░░░░░░░░░░░░` 0% | ⬜ |
+| 8 | Bit Manipulation | 0 / 10 | `░░░░░░░░░░░░` 0% | ⬜ |
+| 9 | Stack and Queues | 0 / 31 | `░░░░░░░░░░░░` 0% | ⬜ |
+| 10 | Sliding Window and Two Pointers | 0 / 12 | `░░░░░░░░░░░░` 0% | ⬜ |
+| 11 | Heaps | 0 / 8 | `░░░░░░░░░░░░` 0% | ⬜ |
+| 12 | Greedy Algorithms | 0 / 15 | `░░░░░░░░░░░░` 0% | ⬜ |
+| 13 | Binary Trees | 0 / 40 | `░░░░░░░░░░░░` 0% | ⬜ |
+| 14 | Binary Search Trees | 0 / 16 | `░░░░░░░░░░░░` 0% | ⬜ |
+| 15 | Graphs | 0 / 52 | `░░░░░░░░░░░░` 0% | ⬜ |
+| 16 | Dynamic Programming | 0 / 60 | `░░░░░░░░░░░░` 0% | ⬜ |
+| 17 | Tries | 0 / 7 | `░░░░░░░░░░░░` 0% | ⬜ |
+| 18 | Strings (Advanced) | 0 / 9 | `░░░░░░░░░░░░` 0% | ⬜ |
+| | **Overall** | **0 / 455** | `░░░░░░░░░░░░` **0%** | |
+
+> Solved counts come from the folders and metadata in this repo. A few topics map to
+> more than one step, so individual rows can overlap. The **Overall** row is the
+> source of truth for sheet progress.
 
 <details>
 <summary><strong>Milestones</strong></summary>
 
-### Problems solved
+### Problems solved · 0/7 reached
 - [ ] 10 problems
 - [ ] 50 problems
 - [ ] 100 problems
@@ -86,7 +106,7 @@ Status: ⬜ Not started • 🟨 In progress • 🟩 All mapped topics started
 - [ ] 600 problems
 - [ ] 800 problems
 
-### Streaks
+### Streaks · 0/6 reached
 - [ ] 7-day streak
 - [ ] 30-day streak
 - [ ] 50-day streak
@@ -94,7 +114,7 @@ Status: ⬜ Not started • 🟨 In progress • 🟩 All mapped topics started
 - [ ] 200-day streak
 - [ ] 365-day streak
 
-### Skills
+### Skills · 0/7 reached
 - [ ] C++ & STL started
 - [ ] 10 Easy problems solved
 - [ ] 25 Medium problems solved
@@ -186,29 +206,25 @@ g++ -std=c++17 -O2 -Wall solution.cpp -o solution && ./solution
 
 ---
 
-## Resources
-
-| Purpose | Resource |
-|:---|:---|
-| DSA sheet | [Striver's A2Z DSA Sheet](https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2/) |
-| C++ reference | [learncpp.com](https://www.learncpp.com/) • [cppreference.com](https://en.cppreference.com/) |
-| Video lectures | [take U forward](https://www.youtube.com/@takeUforward) |
-| Concepts | [Abdul Bari](https://www.youtube.com/@abdul_bari) |
-| Practice | [LeetCode](https://leetcode.com/) • [CSES Problem Set](https://cses.fi/problemset/) |
-| Contests | [Codeforces](https://codeforces.com/) • [CodeChef](https://www.codechef.com/) |
-| Advanced | [CP-Algorithms](https://cp-algorithms.com/) • *Competitive Programmer's Handbook* |
-
----
-
 ## Connect
 
-I'm open to internships, collaborations, and conversations about problem solving.
+I'm open to internships, collaborations, and conversations about problem solving. If you're working through the same sheet, I'd be glad to compare notes.
 
 <div align="center">
 
-[GitHub](https://github.com/zeditya) • [Star this repo](https://github.com/zeditya/Dsa-cpp/stargazers) • [Repo manual](.github/readme/MANUAL.md)
+[**GitHub**](https://github.com/zeditya) · [**Email**](mailto:adityabahuguna098@gmail.com) · [**Open an issue**](https://github.com/zeditya/Dsa-cpp/issues/new) · [**Star this repo**](https://github.com/zeditya/Dsa-cpp/stargazers)
 
 </div>
+
+**Currently:** working through Striver's A2Z sheet · 🎯 455 problems to go · 🔥 1-day streak
+
+| 🤝 Open to | 💬 Ask me about |
+|:---|:---|
+| • Internships<br/>• Open-source collaborations<br/>• DSA study groups<br/>• Code reviews | • C++ and the STL<br/>• Problem-solving patterns<br/>• Striver's A2Z sheet<br/>• Writing code I can explain |
+
+<sub>📍 India · IST · ⏱️ Usually replies within a couple of days.</sub>
+
+<sub>If this repo helps you, a ⭐ is the easiest way to say thanks.</sub>
 
 <img src=".github/readme/assets/divider.svg" alt="Pac-Man divider" width="100%" />
 

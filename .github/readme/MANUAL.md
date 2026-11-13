@@ -39,10 +39,13 @@ This repo is a **living DSA + C++ practice journal**:
   - active days
   - recent solutions
   - a 365-day commit heatmap
-  - a Striver A2Z step tracker based on topic coverage
+  - a Striver A2Z step tracker with per-step targets and completion bars
+  - per-step targets, completion bars, and an overall sheet meter
+  - this week, last 30 days, average pace, and a projected finish date
   - problem, streak, and skill milestones
   - an eight-week activity log from git history
   - a live repo tree
+  - a config-driven Connect section
   - an optional contest log from `.github/readme/scripts/contests.json`
 - Automation commits are excluded from streaks, heatmaps, and the weekly log, so the numbers reflect your work and not the bot.
 - The script regenerates:
@@ -343,15 +346,17 @@ https://raw.githubusercontent.com/zeditya/Dsa-cpp/output/github-contribution-gri
 | :--- | :--- |
 | Hero banner | `.github/readme/assets/hero.svg` |
 | Goal table | First commit date and `config.json` |
-| Overall progress | Solution count and `target_problems` |
-| Stats at a glance | Solution files and difficulty metadata |
-| Dashboard | Topic counts, streaks, active days |
+| Stats at a glance | Solution files, difficulty metadata, streaks |
+| Dashboard | Topic counts, streaks, active days, difficulty mix, pace |
+| The big picture | Overall meter, difficulty mix, weekly/monthly pace, projected finish |
 | Striver A2Z tracker | `striver_steps` in `config.json` plus topic counts |
+| Next up | First Striver step under its target |
 | Milestones | Problem count, best streak, topic counts, contest data |
 | Recent work | Newest solution files and metadata |
 | Weekly log | Git history, active weeks in the last eight weeks |
 | Heatmap | Git history, last 365 days |
 | Repo tree | Real top-level folders and solution counts |
+| Connect | `connect` block in `config.json` |
 | Contest log | Optional `.github/readme/scripts/contests.json` |
 
 ### 5.4 Why bot commits are excluded
@@ -435,11 +440,14 @@ README is never committed.
 | `{{REPO_URL}}` | Full repository URL |
 | `{{LAST_UPDATED}}` | Generator timestamp |
 | `{{STATS_TABLE}}` | Total, difficulty split, current and best streak |
-| `{{STRIVER_TABLE}}` | Striver A2Z step tracker |
+| `{{PROGRESS_OVERVIEW}}` | Overall meter, difficulty mix, pace, projected finish |
+| `{{NEXT_UP}}` | First Striver step under its target |
+| `{{STRIVER_TABLE}}` | Striver A2Z step tracker with per-step targets |
 | `{{MILESTONES}}` | Auto-checked problem, streak, and skill milestones |
 | `{{RECENT_TABLE}}` | Five most recent solutions |
 | `{{WEEKLY_LOG}}` | Active weeks in the last eight weeks |
 | `{{REPO_TREE}}` | Real top-level folders and solution counts |
+| `{{CONNECT_SECTION}}` | Links, availability, and contact details from `config.json` |
 | `{{CONTEST_SECTION}}` | Optional contest log from `contests.json` |
 | `{{TOTAL_SOLUTIONS}}` | Total tracked code files |
 | `{{TARGET_PROBLEMS}}` | Overall target |
@@ -479,24 +487,65 @@ The tracker reads `striver_steps` from `.github/readme/scripts/config.json`:
 ```json
 {
   "name": "Arrays",
-  "topics": ["Arrays", "Two Pointers", "Sliding Window"]
+  "topics": ["Arrays", "Two Pointers", "Sliding Window"],
+  "target": 46
 }
 ```
 
-The `topics` names must match the `topics` list in the same file. Each step
-shows:
+The `topics` names must match the `topics` list in the same file. `target` is the
+number of problems in that step of the sheet. The 18 default targets sum to
+`target_problems` (455), so the tracker and the overall meter stay consistent.
 
-- **Solved**: total solutions in the mapped topics
-- **Coverage**: how many mapped topics have at least one solution
-- **Status**: ⬜ none, 🟨 some, 🟩 all mapped topics started
+Each step shows:
 
-Add, remove, or reorder steps by editing the array. The table updates on the
-next run.
+- **Solved**: solutions in the mapped topics, compared to the step target
+- **Progress**: a text bar and percentage, capped at 100%
+- **Status**: ⬜ none, 🟨 in progress, 🟩 target reached
 
-> Coverage is about topics started, not every problem in the sheet. If you want
-> strict sheet completion, add a `target` per step and compare `solved` to it.
+The final **Overall** row uses the total solution count, not the sum of the rows,
+because a few topics map to more than one step (`Sliding Window` appears in both
+Arrays and the two-pointer step, and `Trees & BST` covers both tree steps).
 
-### 6.9 Change milestones
+Add, remove, or reorder steps by editing the array. Keep the targets in sync with
+`target_problems`. The table updates on the next run.
+
+> `build_next_up()` picks the first step below its target, so the “Next up”
+> callout follows the sheet order automatically.
+
+### 6.9 Change the Connect section
+
+The Connect section is generated from the `connect` block in
+`.github/readme/scripts/config.json`:
+
+```json
+{
+  "connect": {
+    "location": "India · IST",
+    "response_time": "Usually replies within a couple of days.",
+    "open_to": ["Internships", "Open-source collaborations"],
+    "ask_about": ["C++ and the STL", "Problem-solving patterns"],
+    "links": {
+      "GitHub": "https://github.com/zeditya",
+      "Email": "mailto:you@example.com",
+      "LinkedIn": "",
+      "LeetCode": "",
+      "Codeforces": "",
+      "X": ""
+    }
+  }
+}
+```
+
+- Empty links are skipped, so you can leave a platform blank until you use it.
+- `open_to` and `ask_about` render as a two-column table.
+- `location` and `response_time` render as a small footer line.
+- “Open an issue” and “Star this repo” are added automatically.
+- The `Currently` line uses live stats (remaining problems and current streak).
+
+The divider, closing note, and the rest of the section live in
+`.github/readme/scripts/readme_template.md` if you want to change the prose.
+
+### 6.10 Change milestones
 
 Problem milestones live in `PROBLEM_MILESTONES`:
 
@@ -522,7 +571,7 @@ Skill milestones are in `build_milestones()`. They use topic counts and
 difficulty counts, so they stay automatic. Contest skill milestones use the
 number of entries in `contests.json`.
 
-### 6.10 Change the weekly log, heatmap, and snake
+### 6.11 Change the weekly log, heatmap, and snake
 
 - Weekly log: `build_weekly_log(stats)` uses git history and shows the current
   week plus any past week with commits or solutions in the last eight weeks.
@@ -535,7 +584,7 @@ The snake is the only remote image in the README. It comes from the same
 repository, so it does not depend on a third-party image host. If it is missing,
 run **Actions → Generate Snake → Run workflow** once.
 
-### 6.11 Add or change the contest log
+### 6.12 Add or change the contest log
 
 The contest section is optional. It stays hidden until you create:
 
@@ -578,13 +627,13 @@ If both `profiles` and `contests` are empty, the whole section is omitted. If
 the file is invalid JSON, the section is also omitted, so the README cannot
 break because of it.
 
-### 6.12 Remove or reorder sections
+### 6.13 Remove or reorder sections
 
 Delete a section from `.github/readme/scripts/readme_template.md`. If it uses a
 placeholder, remove the placeholder too, or keep the entry in `replacements`.
 Order is controlled only by the template.
 
-### 6.13 Unbreakable images policy
+### 6.14 Unbreakable images policy
 
 The README is designed to survive broken links:
 
@@ -617,11 +666,13 @@ These are generated by `.github/readme/scripts/update_readme.py`. The
 
 Function: `render_dashboard(stats)`
 
-- Canvas: `1200 × 780`
+- Canvas: `1200 × 950`
 - Header pill + title
 - Four stat cards: solutions, current streak, topics, active days
 - Overall progress bar
 - Two-column topic coverage grid
+- Difficulty mix bars (Easy / Medium / Hard)
+- Pace panel: this week, last 30 days, average pace, projected finish
 - Footer with last-updated timestamp and repo URL
 
 Common edits:
@@ -637,6 +688,9 @@ Common edits:
 | Accent line | `<rect ... fill="url(#accent)">` |
 | Topic bar colors | `["#22d3ee", "#2dd4bf", "#a78bfa", "#4ade80"]` |
 | Topic grid columns | `per_column = math.ceil(len(topics) / 2)` |
+| Difficulty bar colors | `difficulty_rows = [("Easy", ..., "#4ade80"), ...]` |
+| Difficulty bar width | `width="250"` in the difficulty `<rect>` calls |
+| Pace rows | `pace_rows = [...]` |
 | Footer text | Bottom `svg_text(...)` calls |
 
 ### 7.2 Heatmap layout
@@ -949,8 +1003,9 @@ This controls the per-topic bars in the dashboard. It does not cap the count.
 "target_problems": 455
 ```
 
-This controls the overall progress bar in the dashboard and the A2Z completion
-milestone.
+This controls the overall progress bar, the projected finish, and the A2Z
+completion milestone. Keep the sum of `striver_steps[].target` equal to this
+number so the step tracker and the overall meter agree.
 
 ### 9.6 Change timezone
 
@@ -964,8 +1019,9 @@ Use any IANA timezone name.
 ### 9.7 Change the Striver A2Z tracker
 
 Edit the `striver_steps` array. Topic names must match `topics[].name` exactly.
-The tracker shows solved counts and topic coverage for each step, and
-auto-checks a step when all mapped topics have at least one solution.
+Each step needs a `target`; the tracker compares solved counts to it, shows a
+completion bar, and marks the step 🟩 when the target is reached. The step targets
+should add up to `target_problems`.
 
 ---
 
@@ -1363,7 +1419,7 @@ gh workflow run snake.yml --repo zeditya/Dsa-cpp
 | Goal | File |
 | :--- | :--- |
 | Change README text/design | `.github/readme/scripts/readme_template.md` |
-| Change targets/topics/steps/timezone | `.github/readme/scripts/config.json` |
+| Change targets/topics/steps/connect links | `.github/readme/scripts/config.json` |
 | Change banner/dashboard/heatmap/divider visuals | `.github/readme/scripts/update_readme.py` |
 | Swap the README GIF | `.github/readme/assets/grind.gif` and the template |
 | Add contest data | `.github/readme/scripts/contests.json` |

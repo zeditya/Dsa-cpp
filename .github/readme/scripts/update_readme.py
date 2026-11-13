@@ -408,6 +408,22 @@ def collect_solutions() -> list[dict]:
     cpp_extensions = {".cpp", ".cc", ".cxx", ".c", ".h", ".hpp"}
     cpp_files = sum(1 for item in solutions if f".{item['language']}" in cpp_extensions)
 
+    target = int(CONFIG.get("target_problems", 455))
+    solved_days = [item["added_at"].date() for item in solutions]
+    week_start = today - timedelta(days=today.weekday())
+    solved_this_week = sum(1 for day in solved_days if day >= week_start)
+    solved_last_7 = sum(1 for day in solved_days if day >= today - timedelta(days=6))
+    solved_last_30 = sum(1 for day in solved_days if day >= today - timedelta(days=29))
+    remaining = max(0, target - len(solutions))
+    first_day = min(commit_days) if commit_days else (min(solved_days) if solved_days else today)
+    elapsed_weeks = max(1.0, (today - first_day).days / 7)
+    avg_per_week = len(solutions) / elapsed_weeks if solutions else 0.0
+    projected_finish: date | None = None
+    if avg_per_week > 0 and remaining > 0:
+        projected_finish = today + timedelta(weeks=remaining / avg_per_week)
+    elif remaining == 0:
+        projected_finish = today
+
     return {
         "solutions": solutions,
         "total": len(solutions),
@@ -428,6 +444,13 @@ def collect_solutions() -> list[dict]:
         "first_commit": min(commit_days) if commit_days else today,
         "today": today,
         "last_updated": datetime.now(TZ),
+        "target": target,
+        "remaining": remaining,
+        "solved_this_week": solved_this_week,
+        "solved_last_7": solved_last_7,
+        "solved_last_30": solved_last_30,
+        "avg_per_week": avg_per_week,
+        "projected_finish": projected_finish,
     }
 
 
@@ -464,61 +487,147 @@ def build_recent_table(stats: dict) -> str:
     return table
 
 
+def text_meter(percentage: float, width: int = 22) -> str:
+    """Text progress bar that renders everywhere, even without images."""
+    clamped = max(0.0, min(100.0, percentage))
+    filled = int(round(clamped / 100 * width))
+    if clamped > 0:
+        filled = max(1, filled)
+    return "█" * filled + "░" * (width - filled)
+
+
 def build_stats_table(stats: dict) -> str:
     def days(value: int) -> str:
         return f"{value} day" + ("" if value == 1 else "s")
 
     rows = [
-        "| 🧩 Total Solved | 🟢 Easy | 🟡 Medium | 🔴 Hard | 🔥 Current Streak | 🏆 Best Streak |",
-        "|:---:|:---:|:---:|:---:|:---:|:---:|",
-        f"| **{stats['total']}** | {stats['easy']} | {stats['medium']} | "
-        f"{stats['hard']} | {days(stats['current_streak'])} | {days(stats['longest_streak'])} |",
+        "| 🧩 Solved | 🟢 Easy | 🟡 Medium | 🔴 Hard | 🔥 Streak | 🏆 Best | 📅 Active |",
+        "|:---:|:---:|:---:|:---:|:---:|:---:|:---:|",
+        f"| **{stats['total']}** / {stats['target']} | {stats['easy']} | {stats['medium']} | "
+        f"{stats['hard']} | {days(stats['current_streak'])} | {days(stats['longest_streak'])} | "
+        f"{stats['active_days']} |",
     ]
     return "\n".join(rows)
+
+
+def build_progress_overview(stats: dict) -> str:
+    target = max(1, stats["target"])
+    percentage = min(100, round(stats["total"] / target * 100))
+    total = max(1, stats["total"])
+
+    def finish_label() -> str:
+        finish = stats.get("projected_finish")
+        if stats["remaining"] == 0:
+            return "complete 🎉"
+        if not finish:
+            return "—"
+        return finish.strftime("%b %Y")
+
+    difficulty_rows = [
+        ("🟢 Easy", stats["easy"], "#4ade80"),
+        ("🟡 Medium", stats["medium"], "#facc15"),
+        ("🔴 Hard", stats["hard"], "#f87171"),
+    ]
+    mix_rows = [
+        "| Difficulty | Solved | Mix |",
+        "|:---|:---:|:---|",
+    ]
+    for label, count, _color in difficulty_rows:
+        share = round(count / total * 100)
+        mix_rows.append(f"| {label} | {count} | `{text_meter(share, 14)}` {share}% |")
+
+    avg_label = f"{stats['avg_per_week']:.1f}" if stats["avg_per_week"] else "—"
+    pace_rows = [
+        "| This week | Last 7 days | Last 30 days | Avg / week | Projected finish |",
+        "|:---:|:---:|:---:|:---:|:---:|",
+        f"| {stats['solved_this_week']} | {stats['solved_last_7']} | {stats['solved_last_30']} | "
+        f"{avg_label} | {finish_label()} |",
+    ]
+
+    return "\n".join(
+        [
+            f"`{text_meter(percentage, 24)}` **{percentage}% of the A2Z sheet**",
+            "",
+            f"**{stats['total']} / {target}** problems logged · "
+            f"**{stats['remaining']}** to go",
+            "",
+            *mix_rows,
+            "",
+            *pace_rows,
+            "",
+            "<sub>Pace is measured from my first commit. Projected finish assumes the "
+            "current average holds.</sub>",
+        ]
+    )
+
+
+def build_next_up(stats: dict) -> str:
+    for index, step in enumerate(CONFIG.get("striver_steps", []), start=1):
+        target = int(step.get("target", 0) or 0)
+        if not target:
+            continue
+        solved = sum(stats["topics"].get(name, 0) for name in step.get("topics", []))
+        if solved < target:
+            left = target - solved
+            return (
+                f"> **Next up:** Step {index} · **{step['name']}** — "
+                f"{solved} / {target} solved, {left} to go."
+            )
+    return "> **A2Z sheet complete.** Every step has hit its target. 🎉"
 
 
 def build_striver_table(stats: dict) -> str:
     steps = CONFIG.get("striver_steps", [])
     rows = [
-        "| # | Step | Status | Solved | Coverage |",
-        "|:-:|:---|:---:|:---:|:---|",
+        "| # | Step | Solved | Progress | Status |",
+        "|:-:|:---|:---:|:---|:---:|",
     ]
     for index, step in enumerate(steps, start=1):
         topics = step.get("topics", [])
-        counts = [stats["topics"].get(name, 0) for name in topics]
-        solved = sum(counts)
-        covered = sum(1 for count in counts if count > 0)
-        total_topics = len(topics)
-        percentage = 0 if total_topics == 0 else round(covered / total_topics * 100)
-        filled = round(percentage / 100 * 16)
-        if covered > 0:
-            filled = max(1, filled)
-        bar = "█" * filled + "░" * (16 - filled)
-        if total_topics and covered == total_topics:
+        solved = sum(stats["topics"].get(name, 0) for name in topics)
+        target = int(step.get("target", 0) or 0)
+
+        if target:
+            percentage = min(100, round(solved / target * 100))
+            solved_cell = f"{solved} / {target}"
+        else:
+            covered = sum(1 for name in topics if stats["topics"].get(name, 0) > 0)
+            percentage = 0 if not topics else round(covered / len(topics) * 100)
+            solved_cell = str(solved)
+
+        bar = text_meter(percentage, 12)
+        if percentage >= 100:
             status = "🟩"
-        elif covered > 0:
+        elif percentage > 0:
             status = "🟨"
         else:
             status = "⬜"
         rows.append(
-            f"| {index} | {step['name']} | {status} | {solved} | `{bar}` {percentage}% |"
+            f"| {index} | {step['name']} | {solved_cell} | `{bar}` {percentage}% | {status} |"
         )
+
+    overall = min(100, round(stats["total"] / max(1, stats["target"]) * 100))
+    rows.append(
+        f"| | **Overall** | **{stats['total']} / {stats['target']}** | "
+        f"`{text_meter(overall, 12)}` **{overall}%** | |"
+    )
     return "\n".join(rows)
 
 
 def build_milestones(stats: dict, contest_count: int = 0) -> str:
-    lines = ["### Problems solved"]
+    problems_done = sum(1 for threshold, _ in PROBLEM_MILESTONES if stats["total"] >= threshold)
+    lines = [f"### Problems solved · {problems_done}/{len(PROBLEM_MILESTONES)} reached"]
     for threshold, label in PROBLEM_MILESTONES:
         mark = "x" if stats["total"] >= threshold else " "
         suffix = f" • {label}" if label else ""
         lines.append(f"- [{mark}] {threshold} problems{suffix}")
 
-    lines.extend(["", "### Streaks"])
+    streaks_done = sum(1 for threshold in STREAK_MILESTONES if stats["longest_streak"] >= threshold)
+    lines.extend(["", f"### Streaks · {streaks_done}/{len(STREAK_MILESTONES)} reached"])
     for threshold in STREAK_MILESTONES:
         mark = "x" if stats["longest_streak"] >= threshold else " "
         lines.append(f"- [{mark}] {threshold}-day streak")
 
-    lines.extend(["", "### Skills"])
     topics = stats["topics"]
     skills = [
         ("C++ & STL started", topics.get("C++ & STL", 0) > 0),
@@ -529,6 +638,8 @@ def build_milestones(stats: dict, contest_count: int = 0) -> str:
         (f"All {stats['total_topics']} topics started", stats["covered"] >= stats["total_topics"]),
         ("First contest logged", contest_count > 0),
     ]
+    skills_done = sum(1 for _, done in skills if done)
+    lines.extend(["", f"### Skills · {skills_done}/{len(skills)} reached"])
     for label, done in skills:
         mark = "x" if done else " "
         lines.append(f"- [{mark}] {label}")
@@ -647,11 +758,73 @@ def build_contest_section(stats: dict) -> str:
     return "\n".join(parts)
 
 
+def build_connect_section(stats: dict) -> str:
+    connect = CONFIG.get("connect", {})
+    if not isinstance(connect, dict):
+        connect = {}
+    links = connect.get("links", {})
+    if not isinstance(links, dict):
+        links = {}
+
+    order = ["GitHub", "Email", "LinkedIn", "LeetCode", "Codeforces", "X"]
+    chips: list[str] = []
+    for label in order:
+        url = str(links.get(label, "")).strip()
+        if url:
+            chips.append(f"[**{label}**]({url})")
+    repo_url = f"https://github.com/{CONFIG['username']}/{CONFIG['repo']}"
+    chips.append(f"[**Open an issue**]({repo_url}/issues/new)")
+    chips.append(f"[**Star this repo**]({repo_url}/stargazers)")
+
+    open_to = connect.get("open_to", []) or []
+    ask_about = connect.get("ask_about", []) or []
+
+    parts = [
+        "I'm open to internships, collaborations, and conversations about problem solving. "
+        "If you're working through the same sheet, I'd be glad to compare notes.",
+        "",
+        '<div align="center">',
+        "",
+        " · ".join(chips),
+        "",
+        "</div>",
+        "",
+        f"**Currently:** working through Striver's A2Z sheet · "
+        f"🎯 {stats['remaining']} problems to go · 🔥 {stats['current_streak']}-day streak",
+        "",
+    ]
+
+    if open_to or ask_about:
+        open_cell = "<br/>".join(f"• {item}" for item in open_to) or "—"
+        ask_cell = "<br/>".join(f"• {item}" for item in ask_about) or "—"
+        parts.extend(
+            [
+                "| 🤝 Open to | 💬 Ask me about |",
+                "|:---|:---|",
+                f"| {open_cell} | {ask_cell} |",
+                "",
+            ]
+        )
+
+    meta: list[str] = []
+    location = connect.get("location")
+    if location:
+        meta.append(f"📍 {location}")
+    response_time = connect.get("response_time")
+    if response_time:
+        meta.append(f"⏱️ {response_time}")
+    if meta:
+        parts.extend([f"<sub>{' · '.join(meta)}</sub>", ""])
+
+    parts.append("<sub>If this repo helps you, a ⭐ is the easiest way to say thanks.</sub>")
+    return "\n".join(parts)
+
+
 # --------------------------------------------------------------------------- #
 # SVG: dashboard
 # --------------------------------------------------------------------------- #
 def render_dashboard(stats: dict) -> str:
-    width, height = 1200, 780
+    width, height = 1200, 950
     username = CONFIG["username"]
     repo = CONFIG["repo"]
     target = int(CONFIG.get("target_problems", 500))
@@ -794,19 +967,88 @@ def render_dashboard(stats: dict) -> str:
             )
         )
 
+    divider_y = 726
+    parts.append(
+        f'<line x1="60" y1="{divider_y}" x2="1140" y2="{divider_y}" '
+        'stroke="#1e293b" stroke-width="1" />'
+    )
+    parts.append(
+        svg_text(60, divider_y + 32, "DIFFICULTY MIX", 11.5, "#94a3b8", 700, letter_spacing=1.4)
+    )
+
+    total_solved = max(1, stats["total"])
+    difficulty_rows = [
+        ("Easy", stats["easy"], "#4ade80"),
+        ("Medium", stats["medium"], "#facc15"),
+        ("Hard", stats["hard"], "#f87171"),
+    ]
+    for index, (label, count, color) in enumerate(difficulty_rows):
+        y = divider_y + 64 + index * 30
+        share = count / total_solved * 100
+        parts.extend(
+            [
+                svg_text(60, y, label, 12.5, "#cbd5e1" if count else "#64748b", 500),
+                f'<rect x="140" y="{y - 9}" width="250" height="8" rx="4" fill="#1e293b" />',
+            ]
+        )
+        if count:
+            parts.append(
+                f'<rect x="140" y="{y - 9}" width="{max(6.0, 250 * share / 100):.1f}" '
+                f'height="8" rx="4" fill="{color}" />'
+            )
+        parts.append(
+            svg_text(
+                470,
+                y,
+                f"{count} · {share:.0f}%",
+                11.5,
+                "#94a3b8" if count else "#475569",
+                700,
+                anchor="end",
+                family=MONO,
+            )
+        )
+
+    parts.append(
+        svg_text(620, divider_y + 32, "PACE", 11.5, "#94a3b8", 700, letter_spacing=1.4)
+    )
+    finish = stats.get("projected_finish")
+    if stats["remaining"] == 0:
+        finish_label = "Complete 🎉"
+    elif finish:
+        finish_label = finish.strftime("%b %Y")
+    else:
+        finish_label = "—"
+    pace_rows = [
+        ("This week", str(stats["solved_this_week"]), "#e2e8f0"),
+        ("Last 30 days", str(stats["solved_last_30"]), "#e2e8f0"),
+        (
+            "Average pace",
+            f"{stats['avg_per_week']:.1f} / week" if stats["avg_per_week"] else "—",
+            "#e2e8f0",
+        ),
+        ("Projected finish", finish_label, "#67e8f9"),
+    ]
+    for index, (label, value, color) in enumerate(pace_rows):
+        y = divider_y + 64 + index * 30
+        parts.append(svg_text(620, y, label, 12.5, "#64748b", 500))
+        parts.append(
+            svg_text(1140, y, value, 12.5, color, 700, anchor="end", family=MONO)
+        )
+
     parts.extend(
         [
-            '<line x1="60" y1="720" x2="1140" y2="720" stroke="#1e293b" stroke-width="1" />',
+            '<line x1="60" y1="906" x2="1140" y2="906" stroke="#1e293b" stroke-width="1" />',
             svg_text(
                 60,
-                748,
+                934,
                 f"Last updated {stats['last_updated'].strftime('%d %b %Y, %I:%M %p %Z')}",
                 11,
                 "#64748b",
             ),
             svg_text(
                 1140,
-                748,
+                934,
                 f"github.com/{username}/{repo}",
                 11,
                 "#64748b",
@@ -1159,6 +1401,8 @@ def build_readme(stats: dict) -> str:
         "{{REPO_URL}}": f"https://github.com/{CONFIG['username']}/{CONFIG['repo']}",
         "{{LAST_UPDATED}}": stats["last_updated"].strftime("%d %b %Y, %I:%M %p %Z"),
         "{{STATS_TABLE}}": build_stats_table(stats),
+        "{{PROGRESS_OVERVIEW}}": build_progress_overview(stats),
+        "{{NEXT_UP}}": build_next_up(stats),
         "{{STRIVER_TABLE}}": build_striver_table(stats),
         "{{MILESTONES}}": build_milestones(stats, contest_count),
         "{{TOTAL_SOLUTIONS}}": str(stats["total"]),
@@ -1168,6 +1412,7 @@ def build_readme(stats: dict) -> str:
         "{{WEEKLY_LOG}}": build_weekly_log(stats),
         "{{REPO_TREE}}": build_repo_tree(stats),
         "{{CONTEST_SECTION}}": build_contest_section(stats),
+        "{{CONNECT_SECTION}}": build_connect_section(stats),
     }
 
     readme = template

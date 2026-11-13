@@ -16,7 +16,7 @@
 
 <br/>
 
-**[What this is](#what-this-is) • [Progress](#progress) • [How I practice](#how-i-practice) • [Activity](#activity) • [Repo](#repo) • [Resources](#resources) • [Connect](#connect)**
+**[What this is](#what-this-is) • [Progress](#progress) • [How I practice](#how-i-practice) • [Activity](#activity) • [Repo](#repo) • [Connect](#connect)**
 
 </div>
 
@@ -42,16 +42,21 @@ The goal is simple: get good enough at the basics that new problems stop looking
 
 <sub>Updated {{LAST_UPDATED}}.</sub>
 
-<details>
-<summary><strong>Striver's A2Z tracker</strong></summary>
+### The big picture
 
-Status: ⬜ Not started • 🟨 In progress • 🟩 All mapped topics started
+{{PROGRESS_OVERVIEW}}
+
+{{NEXT_UP}}
+
+### Striver's A2Z tracker
+
+Status: ⬜ Not started • 🟨 In progress • 🟩 Target reached
 
 {{STRIVER_TABLE}}
 
-> Coverage counts topics started, not every problem in the sheet. It comes from the folders and metadata in this repo.
-
-</details>
+> Solved counts come from the folders and metadata in this repo. A few topics map to
+> more than one step, so individual rows can overlap. The **Overall** row is the
+> source of truth for sheet progress.
 
 <details>
 <summary><strong>Milestones</strong></summary>
@@ -138,29 +143,9 @@ g++ -std=c++17 -O2 -Wall solution.cpp -o solution && ./solution
 
 {{CONTEST_SECTION}}
 
-## Resources
-
-| Purpose | Resource |
-|:---|:---|
-| DSA sheet | [Striver's A2Z DSA Sheet](https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2/) |
-| C++ reference | [learncpp.com](https://www.learncpp.com/) • [cppreference.com](https://en.cppreference.com/) |
-| Video lectures | [take U forward](https://www.youtube.com/@takeUforward) |
-| Concepts | [Abdul Bari](https://www.youtube.com/@abdul_bari) |
-| Practice | [LeetCode](https://leetcode.com/) • [CSES Problem Set](https://cses.fi/problemset/) |
-| Contests | [Codeforces](https://codeforces.com/) • [CodeChef](https://www.codechef.com/) |
-| Advanced | [CP-Algorithms](https://cp-algorithms.com/) • *Competitive Programmer's Handbook* |
-
----
-
 ## Connect
 
-I'm open to internships, collaborations, and conversations about problem solving.
-
-<div align="center">
-
-[GitHub](https://github.com/{{USERNAME}}) • [Star this repo]({{REPO_URL}}/stargazers) • [Repo manual](.github/readme/MANUAL.md)
-
-</div>
+{{CONNECT_SECTION}}
 
 <img src=".github/readme/assets/divider.svg" alt="Pac-Man divider" width="100%" />
 

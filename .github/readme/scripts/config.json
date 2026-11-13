@@ -167,33 +167,117 @@
   "striver_steps": [
     {
       "name": "Learn the Basics",
-      "topics": ["C++ & STL", "Math", "Bit Manipulation", "Hashing"]
+      "topics": ["C++ & STL", "Math", "Bit Manipulation", "Hashing"],
+      "target": 34
     },
-    { "name": "Sorting Techniques", "topics": ["Sorting"] },
+    {
+      "name": "Sorting Techniques",
+      "topics": ["Sorting"],
+      "target": 7
+    },
     {
       "name": "Arrays",
-      "topics": ["Arrays", "Two Pointers", "Sliding Window"]
+      "topics": ["Arrays", "Two Pointers", "Sliding Window"],
+      "target": 46
     },
-    { "name": "Binary Search", "topics": ["Binary Search"] },
-    { "name": "Strings", "topics": ["Strings"] },
-    { "name": "Linked List", "topics": ["Linked List"] },
+    {
+      "name": "Binary Search",
+      "topics": ["Binary Search"],
+      "target": 34
+    },
+    {
+      "name": "Strings",
+      "topics": ["Strings"],
+      "target": 15
+    },
+    {
+      "name": "Linked List",
+      "topics": ["Linked List"],
+      "target": 32
+    },
     {
       "name": "Recursion",
-      "topics": ["Recursion", "Backtracking"]
+      "topics": ["Recursion", "Backtracking"],
+      "target": 27
     },
-    { "name": "Bit Manipulation", "topics": ["Bit Manipulation"] },
-    { "name": "Stack and Queues", "topics": ["Stack & Queue"] },
+    {
+      "name": "Bit Manipulation",
+      "topics": ["Bit Manipulation"],
+      "target": 10
+    },
+    {
+      "name": "Stack and Queues",
+      "topics": ["Stack & Queue"],
+      "target": 31
+    },
     {
       "name": "Sliding Window and Two Pointers",
-      "topics": ["Sliding Window", "Two Pointers"]
+      "topics": ["Sliding Window", "Two Pointers"],
+      "target": 12
     },
-    { "name": "Heaps", "topics": ["Heaps"] },
-    { "name": "Greedy Algorithms", "topics": ["Greedy"] },
-    { "name": "Binary Trees", "topics": ["Trees & BST"] },
-    { "name": "Binary Search Trees", "topics": ["Trees & BST"] },
-    { "name": "Graphs", "topics": ["Graphs"] },
-    { "name": "Dynamic Programming", "topics": ["Dynamic Programming"] },
-    { "name": "Tries", "topics": ["Tries"] },
-    { "name": "Strings (Advanced)", "topics": ["Strings"] }
-  ]
+    {
+      "name": "Heaps",
+      "topics": ["Heaps"],
+      "target": 8
+    },
+    {
+      "name": "Greedy Algorithms",
+      "topics": ["Greedy"],
+      "target": 15
+    },
+    {
+      "name": "Binary Trees",
+      "topics": ["Trees & BST"],
+      "target": 40
+    },
+    {
+      "name": "Binary Search Trees",
+      "topics": ["Trees & BST"],
+      "target": 16
+    },
+    {
+      "name": "Graphs",
+      "topics": ["Graphs"],
+      "target": 52
+    },
+    {
+      "name": "Dynamic Programming",
+      "topics": ["Dynamic Programming"],
+      "target": 60
+    },
+    {
+      "name": "Tries",
+      "topics": ["Tries"],
+      "target": 7
+    },
+    {
+      "name": "Strings (Advanced)",
+      "topics": ["Strings"],
+      "target": 9
+    }
+  ],
+  "connect": {
+    "location": "India · IST",
+    "response_time": "Usually replies within a couple of days.",
+    "open_to": [
+      "Internships",
+      "Open-source collaborations",
+      "DSA study groups",
+      "Code reviews"
+    ],
+    "ask_about": [
+      "C++ and the STL",
+      "Problem-solving patterns",
+      "Striver's A2Z sheet",
+      "Writing code I can explain"
+    ],
+    "links": {
+      "GitHub": "https://github.com/zeditya",
+      "Email": "mailto:adityabahuguna098@gmail.com",
+      "LinkedIn": "",
+      "LeetCode": "",
+      "Codeforces": "",
+      "X": ""
+    }
+  }
 }
