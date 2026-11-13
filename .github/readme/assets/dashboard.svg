@@ -144,6 +144,6 @@
 <text x="620" y="880" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="500" fill="#64748b" text-anchor="start">Projected finish</text>
 <text x="1140" y="880" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="12.5" font-weight="700" fill="#67e8f9" text-anchor="end">—</text>
 <line x1="60" y1="906" x2="1140" y2="906" stroke="#1e293b" stroke-width="1" />
-<text x="60" y="934" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="400" fill="#64748b" text-anchor="start">Last updated 13 Nov 2026, 04:25 PM IST</text>
+<text x="60" y="934" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="400" fill="#64748b" text-anchor="start">Last updated 14 Nov 2026, 05:25 AM IST</text>
 <text x="1140" y="934" font-family="'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace" font-size="11" font-weight="400" fill="#64748b" text-anchor="end">github.com/zeditya/Dsa-cpp</text>
 </svg>

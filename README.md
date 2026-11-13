@@ -42,7 +42,7 @@ The goal is simple: get good enough at the basics that new problems stop looking
   <img src=".github/readme/assets/dashboard.svg" alt="DSA progress dashboard" width="100%" />
 </div>
 
-<sub>Updated 13 Nov 2026, 04:25 PM IST.</sub>
+<sub>Updated 14 Nov 2026, 05:25 AM IST.</sub>
 
 ### The big picture
 
@@ -149,7 +149,7 @@ No solutions logged yet.
 
 | Week | Topics | Solved | Commits |
 |:---|:---|:---:|:---:|
-| 09 Nov - 13 Nov (current) | - | 0 | 13 |
+| 09 Nov - 14 Nov (current) | - | 0 | 13 |
 
 > The log is generated from my commits. Empty weeks are hidden and the current week is partial.
 
