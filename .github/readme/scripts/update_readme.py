@@ -15,31 +15,216 @@ from __future__ import annotations
 import html
 import json
 import math
+import os
 import random
 import re
 import subprocess
+import sys
+import time
+import xml.etree.ElementTree as ET
 from collections import Counter
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path, PurePosixPath
 from urllib.parse import quote
-from zoneinfo import ZoneInfo
 
-def find_repo_root(start: Path) -> Path:
-    """Walk up from the script until the repository root is found."""
-    for candidate in [start, *start.parents]:
-        if (candidate / ".git").exists():
-            return candidate
-    for candidate in [start, *start.parents]:
-        if (candidate / "README.md").exists():
-            return candidate
-    return start.parents[1] if len(start.parents) > 1 else start
+try:
+    from zoneinfo import ZoneInfo
+except ImportError:  # pragma: no cover - Python < 3.9
+    ZoneInfo = None
+
+# --------------------------------------------------------------------------- #
+# Repository root (the script lives at .github/readme/scripts/)
+# --------------------------------------------------------------------------- #
+
+SCRIPT_DIR = Path(__file__).resolve().parent       # .github/readme/scripts/
+REPO_ROOT = SCRIPT_DIR.parent                      # .github/readme/
+PROJECT_ROOT = REPO_ROOT.parent                    # /home/aditya/Practice/Dsa-cpp/
+
+CONFIG_PATH = SCRIPT_DIR / "config.json"
+TEMPLATE_PATH = SCRIPT_DIR / "readme_template.md"
+README_PATH = REPO_ROOT / "README.md"
+ASSETS_DIR = REPO_ROOT / ".github" / "readme" / "assets"
+
+# --------------------------------------------------------------------------- #
+# Safe config loading so a broken config.json never crashes the generator
+# --------------------------------------------------------------------------- #
+
+DEFAULT_CONFIG = {
+    "username": "zeditya",
+    "repo": "Dsa-cpp",
+    "target_problems": 455,
+    "topic_target": 25,
+    "timezone": "UTC",
+    "exclude_dirs": [
+        ".git",
+        ".github",
+        ".vscode",
+        ".idea",
+        "scripts",
+        "templates",
+        "assets",
+        "docs",
+        "build",
+        "bin",
+        "node_modules",
+        "output",
+    ],
+    "code_extensions": [
+        ".cpp",
+        ".cc",
+        ".cxx",
+        ".c",
+        ".h",
+        ".hpp",
+        ".py",
+        ".java",
+        ".js",
+        ".ts",
+        ".go",
+        ".rs",
+        ".kt",
+        ".swift",
+    ],
+    "topics": [],
+    "striver_steps": [],
+    "connect": {},
+}
 
 
-ROOT = find_repo_root(Path(__file__).resolve().parent)
-CONFIG_PATH = ROOT / ".github" / "readme" / "scripts" / "config.json"
-TEMPLATE_PATH = ROOT / ".github" / "readme" / "scripts" / "readme_template.md"
-README_PATH = ROOT / "README.md"
-ASSETS_DIR = ROOT / ".github" / "readme" / "assets"
+def safe_int(value: object, default: int) -> int:
+    """Convert a config value to int without ever raising."""
+    try:
+        return int(str(value).strip())
+    except (TypeError, ValueError):
+        return default
+
+
+def load_config(path: Path) -> dict:
+    """Load and normalise config.json. A broken file falls back to defaults."""
+    data: dict = {}
+    try:
+        raw = json.loads(path.read_text(encoding="utf-8"))
+        if isinstance(raw, dict):
+            data = raw
+    except (OSError, ValueError, TypeError) as exc:
+        print(f"[warn] Could not read {path.name}: {exc}", file=sys.stderr)
+
+    config = {**DEFAULT_CONFIG, **data}
+    repo_env = os.environ.get("GITHUB_REPOSITORY", "")
+    env_owner, _, env_repo = repo_env.partition("/")
+
+    config["username"] = (
+        str(config.get("username") or env_owner or DEFAULT_CONFIG["username"]).strip()
+        or DEFAULT_CONFIG["username"]
+    )
+    config["repo"] = (
+        str(config.get("repo") or env_repo or DEFAULT_CONFIG["repo"]).strip()
+        or DEFAULT_CONFIG["repo"]
+    )
+    config["target_problems"] = max(
+        1, safe_int(config.get("target_problems"), DEFAULT_CONFIG["target_problems"])
+    )
+    config["topic_target"] = max(
+        1, safe_int(config.get("topic_target"), DEFAULT_CONFIG["topic_target"])
+    )
+    config["timezone"] = str(config.get("timezone") or "UTC").strip() or "UTC"
+
+    excluded = config.get("exclude_dirs")
+    config["exclude_dirs"] = (
+        [str(item).strip("/") for item in excluded if str(item).strip()]
+        if isinstance(excluded, list)
+        else list(DEFAULT_CONFIG["exclude_dirs"])
+    )
+
+    extensions = config.get("code_extensions")
+    if isinstance(extensions, list):
+        cleaned = []
+        for item in extensions:
+            suffix = str(item).strip().lower()
+            if not suffix:
+                continue
+            cleaned.append(suffix if suffix.startswith(".") else f".{suffix}")
+        config["code_extensions"] = cleaned or list(DEFAULT_CONFIG["code_extensions"])
+    else:
+        config["code_extensions"] = list(DEFAULT_CONFIG["code_extensions"])
+
+    topics: list[dict] = []
+    raw_topics = config.get("topics")
+    if isinstance(raw_topics, list):
+        for item in raw_topics:
+            if not isinstance(item, dict):
+                continue
+            name = str(item.get("name", "")).strip()
+            if not name:
+                continue
+            matches = item.get("match", [])
+            if isinstance(matches, str):
+                matches = [matches]
+            if not isinstance(matches, list):
+                matches = []
+            topics.append(
+                {
+                    "name": name[:60],
+                    "icon": str(item.get("icon", "•")).strip()[:8] or "•",
+                    "match": [str(value).strip() for value in matches if str(value).strip()],
+                }
+            )
+    config["topics"] = topics
+
+    steps: list[dict] = []
+    raw_steps = config.get("striver_steps")
+    if isinstance(raw_steps, list):
+        for item in raw_steps:
+            if not isinstance(item, dict):
+                continue
+            name = str(item.get("name", "")).strip()
+            if not name:
+                continue
+            step_topics = item.get("topics", [])
+            if not isinstance(step_topics, list):
+                step_topics = []
+            steps.append(
+                {
+                    "name": name[:60],
+                    "topics": [str(topic).strip() for topic in step_topics if str(topic).strip()],
+                    "target": max(0, safe_int(item.get("target"), 0)),
+                }
+            )
+    config["striver_steps"] = steps
+
+    connect = config.get("connect")
+    if not isinstance(connect, dict):
+        connect = {}
+    config["connect"] = connect
+    return config
+
+
+CONFIG = load_config(CONFIG_PATH)
+
+# --------------------------------------------------------------------------- #
+# Resolve timezone
+# --------------------------------------------------------------------------- #
+
+try:
+    from zoneinfo import ZoneInfo
+except ImportError:  # pragma: no cover - Python < 3.9
+    ZoneInfo = None
+
+
+def resolve_timezone(name: object):
+    if ZoneInfo is None or not name:
+        return timezone.utc
+    try:
+        return ZoneInfo(str(name))
+    except Exception:
+        return timezone.utc
+
+
+TZ = resolve_timezone(CONFIG.get("timezone", "UTC"))
+
+# --------------------------------------------------------------------------- #
+# Small utilities
+# --------------------------------------------------------------------------- #
 
 SANS = "Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif"
 MONO = "'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace"
@@ -65,34 +250,18 @@ STREAK_MILESTONES = [7, 30, 50, 100, 200, 365]
 
 
 # --------------------------------------------------------------------------- #
-# Small utilities
+# Git helper (captures all output safely)
 # --------------------------------------------------------------------------- #
-def load_json(path: Path) -> dict:
-    with path.open("r", encoding="utf-8") as fh:
-        return json.load(fh)
-
-
-CONFIG = load_json(CONFIG_PATH)
-
-
-def resolve_timezone(name: str):
-    try:
-        return ZoneInfo(name)
-    except Exception:
-        return timezone.utc
-
-
-TZ = resolve_timezone(CONFIG.get("timezone", "UTC"))
-
 
 def git(*args: str) -> str:
     """Run a git command, returning stdout (empty string on failure)."""
     try:
         result = subprocess.run(
             ["git", *args],
-            cwd=ROOT,
+            cwd=PROJECT_ROOT,
             capture_output=True,
             text=True,
+            errors="replace",
             timeout=60,
             check=False,
         )
@@ -121,6 +290,10 @@ def norm_token(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", "", value.lower())
 
 
+# --------------------------------------------------------------------------- #
+# SVG text helper
+# --------------------------------------------------------------------------- #
+
 def svg_text(
     x: float,
     y: float,
@@ -147,62 +320,57 @@ def svg_text(
 # --------------------------------------------------------------------------- #
 # Repo scanning
 # --------------------------------------------------------------------------- #
+
 def iter_code_files() -> list[Path]:
-    excluded = {d.strip("/") for d in CONFIG.get("exclude_dirs", [])}
-    extensions = {e.lower() for e in CONFIG.get("code_extensions", [])}
+    """Walk the repo looking for solution files; never raise."""
+    excluded = set(CONFIG.get("exclude_dirs", []))
+    extensions = {str(ext).lower() for ext in CONFIG.get("code_extensions", [])}
     files: list[Path] = []
-    for path in ROOT.rglob("*"):
-        if not path.is_file():
-            continue
-        rel_parts = path.relative_to(ROOT).parts
-        if any(part in excluded for part in rel_parts[:-1]):
-            continue
-        if path.suffix.lower() not in extensions:
-            continue
-        files.append(path)
+    try:
+        candidates = PROJECT_ROOT.rglob("*")
+        for path in candidates:
+            try:
+                if not path.is_file():
+                    continue
+                rel_parts = path.relative_to(PROJECT_ROOT).parts
+            except (OSError, ValueError):
+                continue
+            if any(part in excluded for part in rel_parts[:-1]):
+                continue
+            if path.suffix.lower() not in extensions:
+                continue
+            files.append(path)
+    except OSError as exc:
+        print(f"[warn] Could not scan the repository: {exc}", file=sys.stderr)
     return sorted(files)
 
 
-def clean_comment_line(line: str) -> str:
-    line = line.strip()
-    line = re.sub(r"^(?://+|#+|/\*+|\*+|<!--)\s*", "", line)
-    line = re.sub(r"\*/\s*$", "", line)
-    return line.strip()
+# --------------------------------------------------------------------------- #
+# Markdown helpers
+# --------------------------------------------------------------------------- #
+
+def clean_inline(value: object) -> str:
+    """Make arbitrary text safe for a single Markdown table cell or line."""
+    text = str(value).replace("\r", " ").replace("\n", " ").strip()
+    text = html.escape(text, quote=False)
+    return text.replace("|", "\\|")
 
 
-META_PATTERNS = {
-    "problem": re.compile(r"^@?(?:problem(?:\s*name)?|title|question)\s*[:\-]\s*(.+)$", re.I),
-    "topic": re.compile(r"^@?(?:topic|category|tags?)\s*[:\-]\s*(.+)$", re.I),
-    "difficulty": re.compile(r"^@?(?:difficulty|level)\s*[:\-]\s*(.+)$", re.I),
-    "link": re.compile(r"^@?(?:link|url|problem\s*link)\s*[:\-]\s*(https?://\S+)", re.I),
-    "time": re.compile(r"^@?(?:time(?:\s*complexity)?)\s*[:\-]\s*(.+)$", re.I),
-    "space": re.compile(r"^@?(?:space(?:\s*complexity)?)\s*[:\-]\s*(.+)$", re.I),
-}
-NUMBERED_TITLE = re.compile(r"^(?:\d+[\.\)\-:]\s*)(.+)$")
+def safe_url(value: object, allowed=("http://", "https://", "mailto:")) -> str:
+    text = str(value).strip()
+    return text if text.lower().startswith(allowed) else ""
 
 
-def parse_metadata(path: Path) -> dict[str, str]:
-    meta: dict[str, str] = {}
-    try:
-        with path.open("r", encoding="utf-8", errors="ignore") as fh:
-            for _ in range(80):
-                raw = fh.readline()
-                if not raw:
-                    break
-                line = clean_comment_line(raw)
-                if not line:
-                    continue
-                for key, pattern in META_PATTERNS.items():
-                    match = pattern.match(line)
-                    if match and key not in meta:
-                        meta[key] = match.group(1).strip().rstrip("*/").strip()
-                if "problem" not in meta:
-                    numbered = NUMBERED_TITLE.match(line)
-                    if numbered and not line.lower().startswith(("time", "space", "link", "topic", "difficulty")):
-                        meta["problem"] = numbered.group(1).strip()
-    except OSError:
-        pass
-    return meta
+def md_link(label: str, url: object) -> str:
+    link = safe_url(url)
+    clean_label = clean_inline(label)
+    if not link:
+        return f"**{clean_label}**"
+    return f"[**{clean_label}**](<{link}>)"
+
+
+def md_cell(value: object) -> str:
+    return str(value).replace("|", "\\|")
 
 
 def clean_title(raw: str) -> str:
@@ -229,8 +397,8 @@ def normalize_difficulty(raw: str | None) -> str:
     return "Unknown"
 
 
-def build_topic_lookup() -> dict[str, str]:
-    lookup: dict[str, str] = {}
+def build_topic_lookup() -> dict:
+    lookup = {}
     for topic in CONFIG["topics"]:
         for value in [topic["name"], *topic.get("match", [])]:
             token = norm_token(value)
@@ -258,7 +426,7 @@ def classify_topic(rel_path: str, meta_topic: str | None) -> str:
         if token in TOPIC_LOOKUP:
             return TOPIC_LOOKUP[token]
 
-    haystack = norm_token(" ".join([*directories, pure.stem, meta_topic or ""]))
+    haystack = norm_token(" ".join([*directories, meta_topic or ""]))
     best_name = "Misc"
     best_length = 0
     for topic in CONFIG["topics"]:
@@ -271,11 +439,13 @@ def classify_topic(rel_path: str, meta_topic: str | None) -> str:
 
 
 # --------------------------------------------------------------------------- #
-# Git history
+# Git history collection
 # --------------------------------------------------------------------------- #
-def collect_git_data() -> tuple[set[date], Counter[date], int, dict[str, datetime]]:
-    commit_days: set[date] = set()
-    commit_counts: Counter[date] = Counter()
+
+def collect_git_data() -> tuple:
+    """Return (commit_days, commit_counts, commit_count, added_map)."""
+    commit_days: set = set()
+    commit_counts: Counter = Counter()
     commit_count = 0
 
     raw_dates = git("log", "HEAD", "--format=%an|%ae|%aI")
@@ -300,7 +470,7 @@ def collect_git_data() -> tuple[set[date], Counter[date], int, dict[str, datetim
         commit_counts[day] += 1
         commit_count += 1
 
-    added: dict[str, datetime] = {}
+    added: dict = {}
     raw_added = git(
         "log",
         "HEAD",
@@ -327,19 +497,22 @@ def collect_git_data() -> tuple[set[date], Counter[date], int, dict[str, datetim
             except ValueError:
                 current = None
         elif current is not None:
-            # Newest commit is read first, so setdefault keeps the latest add.
             added.setdefault(line, current)
 
     if not commit_days:
         for moment in added.values():
-            day = moment.astimezone(TZ).date()
-            commit_days.add(day)
-            commit_counts[day] += 1
+            try:
+                day = moment.astimezone(TZ).date()
+                commit_days.add(day)
+                commit_counts[day] += 1
+            except Exception:
+                continue
 
     return commit_days, commit_counts, commit_count, added
 
 
-def calculate_streaks(active_days: set[date], today: date) -> tuple[int, int]:
+def calculate_streaks(active_days: set, today: date) -> tuple:
+    """Return (current_streak, longest_streak)."""
     if not active_days:
         return 0, 0
 
@@ -364,12 +537,14 @@ def calculate_streaks(active_days: set[date], today: date) -> tuple[int, int]:
 # --------------------------------------------------------------------------- #
 # Aggregate stats
 # --------------------------------------------------------------------------- #
-def collect_solutions() -> list[dict]:
+
+def collect_solutions() -> dict:
+    """Collect all solution metadata; returns a dict (not a list)."""
     commit_days, commit_counts, commit_count, added_map = collect_git_data()
-    solutions: list[dict] = []
+    solutions: list = []
 
     for path in iter_code_files():
-        rel = path.relative_to(ROOT).as_posix()
+        rel = path.relative_to(PROJECT_ROOT).as_posix()
         meta = parse_metadata(path)
         raw_title = meta.get("problem") or title_from_filename(path)
         title = clean_title(raw_title)
@@ -380,7 +555,14 @@ def collect_solutions() -> list[dict]:
         difficulty = normalize_difficulty(meta.get("difficulty"))
         added_at = added_map.get(rel)
         if added_at is None:
-            added_at = datetime.fromtimestamp(path.stat().st_mtime, tz=TZ)
+            try:
+                mtime = path.stat().st_mtime
+            except OSError:
+                mtime = time.time()
+            try:
+                added_at = datetime.fromtimestamp(mtime, tz=TZ)
+            except (OSError, OverflowError, ValueError):
+                added_at = datetime.now(TZ)
         else:
             added_at = added_at.astimezone(TZ)
 
@@ -408,7 +590,7 @@ def collect_solutions() -> list[dict]:
     cpp_extensions = {".cpp", ".cc", ".cxx", ".c", ".h", ".hpp"}
     cpp_files = sum(1 for item in solutions if f".{item['language']}" in cpp_extensions)
 
-    target = int(CONFIG.get("target_problems", 455))
+    target = max(1, safe_int(CONFIG.get("target_problems"), 455))
     solved_days = [item["added_at"].date() for item in solutions]
     week_start = today - timedelta(days=today.weekday())
     solved_this_week = sum(1 for day in solved_days if day >= week_start)
@@ -454,9 +636,44 @@ def collect_solutions() -> list[dict]:
     }
 
 
+def empty_stats() -> dict:
+    """A safe stats object used when repository scanning fails."""
+    today = datetime.now(TZ).date()
+    target = max(1, safe_int(CONFIG.get("target_problems"), 455))
+    return {
+        "solutions": [],
+        "total": 0,
+        "cpp_files": 0,
+        "topics": Counter(),
+        "covered": 0,
+        "total_topics": len(CONFIG["topics"]),
+        "easy": 0,
+        "medium": 0,
+        "hard": 0,
+        "unknown": 0,
+        "commit_days": set(),
+        "commit_counts": Counter(),
+        "commit_count": 0,
+        "active_days": 0,
+        "current_streak": 0,
+        "longest_streak": 0,
+        "first_commit": today,
+        "today": today,
+        "last_updated": datetime.now(TZ),
+        "target": target,
+        "remaining": target,
+        "solved_this_week": 0,
+        "solved_last_7": 0,
+        "solved_last_30": 0,
+        "avg_per_week": 0.0,
+        "projected_finish": None,
+    }
+
+
 # --------------------------------------------------------------------------- #
 # Markdown fragments
 # --------------------------------------------------------------------------- #
+
 def build_recent_table(stats: dict) -> str:
     solutions = stats["solutions"]
     if not solutions:
@@ -467,18 +684,14 @@ def build_recent_table(stats: dict) -> str:
         "| :--- | :--- | :---: | :---: | :---: |",
     ]
     for item in solutions[:5]:
-        title = item["title"].replace("|", "\\|")
-        if item["link"]:
-            problem_cell = f"[**{title}**]({item['link']})"
-        else:
-            problem_cell = f"**{title}**"
+        problem_cell = md_link(item["title"], item.get("link", ""))
         icon = TOPIC_ICONS.get(item["topic"], "•")
         difficulty = item["difficulty"]
         difficulty_label = f"{DIFFICULTY_EMOJI.get(difficulty, '⚪')} {difficulty}"
         code_link = quote(item["path"], safe="/")
         rows.append(
-            f"| {problem_cell} | {icon} {item['topic']} | {difficulty_label} | "
-            f"{item['added_at'].strftime('%d %b %Y')} | [View]({code_link}) |"
+            f"| {problem_cell} | {icon} {clean_inline(item['topic'])} | {difficulty_label} | "
+            f"{item['added_at'].strftime('%d %b %Y')} | [View](<{code_link}>) |"
         )
 
     table = "\n".join(rows)
@@ -562,18 +775,23 @@ def build_progress_overview(stats: dict) -> str:
 
 
 def build_next_up(stats: dict) -> str:
-    for index, step in enumerate(CONFIG.get("striver_steps", []), start=1):
-        target = int(step.get("target", 0) or 0)
+    steps = CONFIG.get("striver_steps", [])
+    found_target = False
+    for index, step in enumerate(steps, start=1):
+        target = max(0, safe_int(step.get("target"), 0))
         if not target:
             continue
+        found_target = True
         solved = sum(stats["topics"].get(name, 0) for name in step.get("topics", []))
         if solved < target:
             left = target - solved
             return (
-                f"> **Next up:** Step {index} · **{step['name']}** — "
+                f"> **Next up:** Step {index} · **{clean_inline(step['name'])}** — "
                 f"{solved} / {target} solved, {left} to go."
             )
-    return "> **A2Z sheet complete.** Every step has hit its target. 🎉"
+    if found_target:
+        return "> **A2Z sheet complete.** Every step has hit its target. 🎉"
+    return "> **Next up:** the first problem on the sheet."
 
 
 def build_striver_table(stats: dict) -> str:
@@ -585,7 +803,7 @@ def build_striver_table(stats: dict) -> str:
     for index, step in enumerate(steps, start=1):
         topics = step.get("topics", [])
         solved = sum(stats["topics"].get(name, 0) for name in topics)
-        target = int(step.get("target", 0) or 0)
+        target = max(0, safe_int(step.get("target"), 0))
 
         if target:
             percentage = min(100, round(solved / target * 100))
@@ -603,7 +821,8 @@ def build_striver_table(stats: dict) -> str:
         else:
             status = "⬜"
         rows.append(
-            f"| {index} | {step['name']} | {solved_cell} | `{bar}` {percentage}% | {status} |"
+            f"| {index} | {clean_inline(step['name'])} | {solved_cell} | "
+            f"`{bar}` {percentage}% | {status} |"
         )
 
     overall = min(100, round(stats["total"] / max(1, stats["target"]) * 100))
@@ -635,9 +854,15 @@ def build_milestones(stats: dict, contest_count: int = 0) -> str:
         ("25 Medium problems solved", stats["medium"] >= 25),
         ("Graphs started", topics.get("Graphs", 0) > 0),
         ("Dynamic Programming started", topics.get("Dynamic Programming", 0) > 0),
-        (f"All {stats['total_topics']} topics started", stats["covered"] >= stats["total_topics"]),
-        ("First contest logged", contest_count > 0),
     ]
+    if stats["total_topics"] > 0:
+        skills.append(
+            (
+                f"All {stats['total_topics']} topics started",
+                stats["covered"] >= stats["total_topics"],
+            )
+        )
+    skills.append(("First contest logged", contest_count > 0))
     skills_done = sum(1 for _, done in skills if done)
     lines.extend(["", f"### Skills · {skills_done}/{len(skills)} reached"])
     for label, done in skills:
@@ -675,8 +900,8 @@ def build_weekly_log(stats: dict) -> str:
 
 def build_repo_tree(stats: dict) -> str:
     excluded = {".git", ".github", "output", "node_modules", "build", "bin"}
-    entries: list[tuple[str, str]] = []
-    for entry in sorted(ROOT.iterdir()):
+    entries: list = []
+    for entry in sorted(PROJECT_ROOT.iterdir()):
         if not entry.is_dir() or entry.name in excluded:
             continue
         count = sum(
@@ -693,19 +918,19 @@ def build_repo_tree(stats: dict) -> str:
     return "\n".join(lines)
 
 
+# --------------------------------------------------------------------------- #
+# Contest helpers
+# --------------------------------------------------------------------------- #
+
 def load_contests() -> dict:
-    path = ROOT / ".github" / "readme" / "scripts" / "contests.json"
+    path = SCRIPT_DIR / "contests.json"
     if not path.exists():
         return {}
     try:
-        data = load_json(path)
-    except (OSError, json.JSONDecodeError):
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError, ValueError):
         return {}
     return data if isinstance(data, dict) else {}
-
-
-def md_cell(value: object) -> str:
-    return str(value).replace("|", "\\|")
 
 
 def build_contest_section(stats: dict) -> str:
@@ -758,6 +983,10 @@ def build_contest_section(stats: dict) -> str:
     return "\n".join(parts)
 
 
+# --------------------------------------------------------------------------- #
+# Connect section
+# --------------------------------------------------------------------------- #
+
 def build_connect_section(stats: dict) -> str:
     connect = CONFIG.get("connect", {})
     if not isinstance(connect, dict):
@@ -767,14 +996,14 @@ def build_connect_section(stats: dict) -> str:
         links = {}
 
     order = ["GitHub", "Email", "LinkedIn", "LeetCode", "Codeforces", "X"]
-    chips: list[str] = []
+    chips: list = []
     for label in order:
         url = str(links.get(label, "")).strip()
         if url:
-            chips.append(f"[**{label}**]({url})")
+            chips.append(md_link(label, url))
     repo_url = f"https://github.com/{CONFIG['username']}/{CONFIG['repo']}"
-    chips.append(f"[**Open an issue**]({repo_url}/issues/new)")
-    chips.append(f"[**Star this repo**]({repo_url}/stargazers)")
+    chips.append(md_link("Open an issue", repo_url + "/issues/new"))
+    chips.append(md_link("Star this repo", repo_url + "/stargazers"))
 
     open_to = connect.get("open_to", []) or []
     ask_about = connect.get("ask_about", []) or []
@@ -806,7 +1035,7 @@ def build_connect_section(stats: dict) -> str:
             ]
         )
 
-    meta: list[str] = []
+    meta: list = []
     location = connect.get("location")
     if location:
         meta.append(f"📍 {location}")
@@ -823,6 +1052,7 @@ def build_connect_section(stats: dict) -> str:
 # --------------------------------------------------------------------------- #
 # SVG: dashboard
 # --------------------------------------------------------------------------- #
+
 def render_dashboard(stats: dict) -> str:
     width, height = 1200, 950
     username = CONFIG["username"]
@@ -831,10 +1061,10 @@ def render_dashboard(stats: dict) -> str:
     total = stats["total"]
     percentage = 0 if target <= 0 else min(100, round(total / target * 100))
 
-    parts: list[str] = [
+    parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
         f'viewBox="0 0 {width} {height}" role="img" '
-        f'aria-label="Live DSA progress dashboard for {html.escape(username)}">',
+        f'aria-label="DSA progress dashboard">',
         "<defs>",
         '<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">',
         '<stop offset="0%" stop-color="#080f1c" />',
@@ -998,19 +1228,20 @@ def render_dashboard(stats: dict) -> str:
             )
         parts.append(
             svg_text(
-                470,
+                140 + 250 + 20,
                 y,
                 f"{count} · {share:.0f}%",
                 11.5,
-                "#94a3b8" if count else "#475569",
+                "#94a3b8",
                 700,
-                anchor="end",
-                family=MONO,
+                anchor="start",
             )
         )
 
-    parts.append(
-        svg_text(620, divider_y + 32, "PACE", 11.5, "#94a3b8", 700, letter_spacing=1.4)
+    parts.extend(
+        [
+            svg_text(620, divider_y + 32, "PACE", 11.5, "#94a3b8", 700, letter_spacing=1.4),
+        ]
     )
     finish = stats.get("projected_finish")
     if stats["remaining"] == 0:
@@ -1064,13 +1295,14 @@ def render_dashboard(stats: dict) -> str:
 # --------------------------------------------------------------------------- #
 # SVG: consistency heatmap
 # --------------------------------------------------------------------------- #
+
 def render_activity(stats: dict) -> str:
     width, height = 1200, 340
     today = stats["today"]
     username = CONFIG["username"]
     repo = CONFIG["repo"]
 
-    counts: Counter[date] = Counter()
+    counts: Counter = Counter()
     for day in stats["commit_days"]:
         counts[day] += 1
 
@@ -1083,7 +1315,7 @@ def render_activity(stats: dict) -> str:
     grid_x, grid_y = 120, 160
     level_colors = ["#172033", "#0e4429", "#006d32", "#26a641", "#39d353"]
 
-    parts: list[str] = [
+    parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
         f'viewBox="0 0 {width} {height}" role="img" '
         f'aria-label="Commit consistency heatmap for the last 365 days">',
@@ -1193,6 +1425,7 @@ def render_activity(stats: dict) -> str:
 # --------------------------------------------------------------------------- #
 # SVG: hero banner
 # --------------------------------------------------------------------------- #
+
 def render_hero(stats: dict) -> str:
     """Render the README hero with a subtle Matrix-style code rain."""
     width, height = 1200, 340
@@ -1200,7 +1433,7 @@ def render_hero(stats: dict) -> str:
     repo = CONFIG["repo"]
     rng = random.Random(2026)
     chars = "01{}[]<>/*+-=;:()&|#"
-    parts: list[str] = [
+    parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
         f'viewBox="0 0 {width} {height}" role="img" aria-label="DSA in C++ banner">',
         "<defs>",
@@ -1342,10 +1575,11 @@ def render_hero(stats: dict) -> str:
 # --------------------------------------------------------------------------- #
 # SVG: Pac-Man divider
 # --------------------------------------------------------------------------- #
+
 def render_divider() -> str:
     """Render a Pac-Man divider, a playful nod to graph traversal."""
     width, height = 1200, 96
-    parts: list[str] = [
+    parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
         f'viewBox="0 0 {width} {height}" role="img" aria-label="Pac-Man divider">',
         '<line x1="0" y1="48" x2="1200" y2="48" stroke="#334155" stroke-width="2" '
@@ -1361,7 +1595,7 @@ def render_divider() -> str:
         parts.append(
             f'<path d="M {x - 14} 50 A 14 14 0 0 1 {x + 14} 50 '
             f'L {x + 14} 64 L {x + 8} 58 L {x + 2} 64 L {x - 4} 58 '
-            f'L {x - 10} 64 L {x - 14} 58 Z" fill="{color}" />'
+            f'L {x - 10} 58 L {x - 14} 58 Z" fill="{color}" />'
         )
         parts.append(f'<circle cx="{x - 5}" cy="46" r="3.6" fill="#f8fafc" />')
         parts.append(f'<circle cx="{x + 5}" cy="46" r="3.6" fill="#f8fafc" />')
@@ -1387,9 +1621,10 @@ def render_divider() -> str:
 # --------------------------------------------------------------------------- #
 # Build everything
 # --------------------------------------------------------------------------- #
+
 def build_readme(stats: dict) -> str:
     template = TEMPLATE_PATH.read_text(encoding="utf-8")
-    target = int(CONFIG.get("target_problems", 455))
+    target = max(1, safe_int(CONFIG.get("target_problems"), 455))
     percentage = 0 if target <= 0 else min(100, round(stats["total"] / target * 100))
     contest_data = load_contests()
     contests = contest_data.get("contests", [])
